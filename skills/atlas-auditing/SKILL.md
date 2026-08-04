@@ -112,4 +112,3 @@ Violation = a Point typed `System` whose name reads like a document or message t
 
 **Output:** a short scorecard (one line per check: pass / N findings), then the findings, then proposed fixes. Confirm before mutating.
 
-**Reference:** `nav-claude-code-demo/atlas-patterns.md` (Patterns 1-6) and `atlas-rules-gaps.md`.

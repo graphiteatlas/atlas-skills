@@ -4,3 +4,4 @@ node_modules/
 skills/automation-assessment/
 # Internal: brand tooling for internally generated artifacts
 skills/atlas-styling/
+.publish-blocklist
