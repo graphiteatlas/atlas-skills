@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+# Internal: paid-deliverable methodology + customer validation material — not published
+skills/automation-assessment/
+# Internal: brand tooling for internally generated artifacts
+skills/atlas-styling/

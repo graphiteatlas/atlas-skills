@@ -1,0 +1,11 @@
+{
+  "name": "graphite-atlas",
+  "owner": { "name": "Graphite Atlas", "url": "https://graphiteatlas.com" },
+  "plugins": [
+    {
+      "name": "graphite-atlas",
+      "source": "./",
+      "description": "Atlas modeling skills + MCP server, bundled — tools plus the know-how to use them well."
+    }
+  ]
+}

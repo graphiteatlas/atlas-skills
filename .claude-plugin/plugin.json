@@ -1,0 +1,8 @@
+{
+  "name": "graphite-atlas",
+  "version": "0.1.0",
+  "description": "Atlas modeling skills + MCP server, bundled. Gives an agent both the tools to read/write a Graphite Atlas AND the know-how to model it well: correct typing, attachment, instance-vs-singleton, naming, default folder structure, and a health audit. Use whenever building or editing a Graphite Atlas knowledge graph.",
+  "author": { "name": "Graphite Atlas" },
+  "homepage": "https://graphiteatlas.com",
+  "keywords": ["atlas", "knowledge-graph", "enterprise-design", "ontology", "mcp"]
+}
