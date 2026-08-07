@@ -1,6 +1,6 @@
 ---
 name: atlas-auditing
-description: Use when asked to audit, review, QA, or health-check a Graphite Atlas, or before signing off on a process build, or when inheriting an atlas copied from production. Runs a fixed set of read-only Cypher checks that detect violations of the Atlas modeling patterns (dependencies at the wrong level, resources pointing at artifacts or vendors, orphaned step membership, steps with no performer, system/vendor names baked into nodes, overloaded part_of). Reports findings; does not mutate.
+description: Use when asked to audit, review, QA, or health-check a Graphite Atlas, or before signing off on a process build, or when inheriting an atlas copied from production. Runs a fixed set of read-only Cypher checks that detect violations of the Atlas modeling patterns (dependencies at the wrong level, resources pointing at artifacts or vendors, orphaned step membership, steps with no performer, system/vendor names baked into nodes, overloaded part_of, orphan Data Tables, execution-mode contradictions). Reports findings; does not mutate.
 ---
 
 # Atlas Audit
@@ -109,6 +109,25 @@ WHERE size(hits) > 0
 RETURN s.name AS suspect_system, hits AS tokens
 ```
 Violation = a Point typed `System` whose name reads like a document or message type (EDI X12 codes, NACHA file, HL7 message, named forms). Fix: re-type as `Artifact` and swap incoming `uses_resource` edges to `creates_output` (sender side) or `needs_input` (receiver side). See `atlas-artifact-vs-system`.
+
+### 11. Orphan Data Tables (no has_table parent)
+```cypher
+MATCH (t:Point {atlasId:$atlasId, type:'Data Table'})
+WHERE t.deletedAt IS NULL
+  AND NOT EXISTS { MATCH (:Point {type:'Database'})-[:PATH {name:'has_table'}]->(t) }
+RETURN t.name AS orphan_table
+```
+Violation = a Data Table with no owning Database — "which store is this in?" is unanswerable, and `joins_to` guidance loses its anchor. Fix: add `has_table` from the Database that holds it (`has_table` is strictly Database → Data Table; if the intended parent is typed `System`, re-type it `Database` first).
+
+### 12. System-executed steps with a human performer (execution_mode contradiction)
+```cypher
+MATCH (a:Point)-[:PATH {name:'performs'}]->(s:Point {atlasId:$atlasId})
+WHERE s.deletedAt IS NULL AND a.deletedAt IS NULL
+  AND s.execution_mode = 'system'
+  AND a.type IN ['Person','Position','Group']
+RETURN s.name AS step, a.name AS performer, a.type AS performer_type
+```
+Violation = a step marked `execution_mode: 'system'` (runs without a human) that also has a Person/Position/Group `performs` edge — the two claims contradict. Fix: either the mode is wrong (a human does perform it → `human`) or the performer is wrong (remove the edge, or point it at the Agent/System actor that actually executes). An `Agent` performer is consistent with `system` and is not flagged.
 
 **Output:** a short scorecard (one line per check: pass / N findings), then the findings, then proposed fixes. Confirm before mutating.
 

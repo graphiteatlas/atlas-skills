@@ -6,7 +6,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 fail=0
-files=$(git ls-files '*.md' '*.json' '*.html')
+# CONTRIBUTING.md quotes the banned words as rules; exclude it from its own scan.
+files=$(git ls-files '*.md' '*.json' '*.html' | grep -v '^CONTRIBUTING\.md$')
 
 # 1. Generic internal-reference patterns (public, safe to encode here)
 patterns=(

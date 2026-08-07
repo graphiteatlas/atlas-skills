@@ -36,12 +36,14 @@ Vendors via `provided_by`. Documents/messages as Artifacts via `creates_output`/
 - `references/dependencies-on-steps` — `uses_resource`/`needs_input` attach to the leaf step
 - `references/service-as-system` — Step → Service (System) → `provided_by` → Vendor; never Step → Vendor
 - `references/artifact-vs-system` — Systems do work; Artifacts are documents/messages (EDI 850/856, NACHA, 1099/K-1 are Artifacts)
+- `references/database-vs-table` — the store is a Database (is-a System), tables attach via `has_table`, columns are properties, join conditions on `joins_to` descriptions
 
 ### 3. Type by meaning, membership explicit
 Use the right Point type. Sequenced steps need an explicit `has_step`. Handoff is a transfer of
 responsibility, not a notification.
 - `references/step-membership` — every member step needs its own `has_step`; `followed_by` is order only
 - `references/handoff-vs-communication` — `Handoff` = responsibility transfer; notifications are plain Steps
+- `references/ownership-vs-accountability` — equity ownership = `owned_by` (+ `ownership_pct`); responsibility = `accountable_for`
 
 ## Discipline for adding new patterns
 

@@ -25,6 +25,11 @@ swap is a one-Path change, "all payroll systems" queries hit it, and accountabil
 
 ✗  step description: "the distributor allocates the part"   (accountability trapped in prose)
 ✓  "Local Distributor" (Org) ─performs→ the allocate Step
+
+✗  artifact description: "Maintained by QuickBooks"          (prose RESTATING an edge that already
+                                                              exists — desync risk + vendor baked in)
+✓  description says what the thing IS ("the receivables ledger");
+   the maintained-by fact lives ONLY on the creates_output/provided_by edges
 ```
 
 Deeper examples: `references/name-by-function.md`, `references/structure-over-prose.md`,
@@ -49,7 +54,9 @@ are Systems reached `provided_by` a Vendor; documents/messages are Artifacts.
 ```
 
 Deeper examples: `references/dependencies-on-steps.md`, `references/service-as-system.md`,
-`references/artifact-vs-system.md` (EDI X12, NACHA files, 1099/K-1 forms are Artifacts, not Systems).
+`references/artifact-vs-system.md` (EDI X12, NACHA files, 1099/K-1 forms are Artifacts, not Systems),
+`references/database-vs-table.md` (the store is a Database, the app is a System; tables attach via
+`has_table`, columns are properties, join conditions live on `joins_to` edge descriptions).
 
 ## 3. Type by meaning, membership explicit
 
@@ -65,13 +72,20 @@ transfer of responsibility (both sides modeled), not a notification.
 ✓  plain Step ─creates_output→ Notification; reserve Handoff for sender→receiver Position transfers
 ```
 
-Deeper examples: `references/step-membership.md`, `references/handoff-vs-communication.md`.
+```
+✗  "The CFO owns the forecast" → owned_by             (nothing is held as equity)
+✓  CFO (Position) ─accountable_for→ Forecast Process; owned_by is equity only (+ ownership_pct)
+```
+
+Deeper examples: `references/step-membership.md`, `references/handoff-vs-communication.md`,
+`references/ownership-vs-accountability.md` (the two meanings of "owns": equity = `owned_by`,
+responsibility = `accountable_for`).
 
 ---
 
 ## After the write: QA
 
-Once the build or edit is done, invoke `atlas-auditing`. It runs 10 read-only Cypher checks that surface
+Once the build or edit is done, invoke `atlas-auditing`. It runs a fixed set of read-only Cypher checks that surface
 violations of all three principles above. The output is a scorecard with proposed fixes. The audit
 does not mutate.
 
@@ -89,6 +103,14 @@ Read a file in `references/` only when you need the full worked example for a sp
 - The audit flagged a specific violation and you want the fix recipe
 
 ## Structuring a new atlas
+
+**NEVER create folders before checking what exists.** A new atlas
+auto-provisions the six default folders (People, Entities, Business Model, Process, Systems, Metrics),
+possibly with a short allocation delay after `create_atlas`. Creating your own "People"/"Process"/etc.
+produces a DUPLICATE set alongside the empty defaults. Rule: after `create_atlas` and before any
+folder/view work, call `get_view_hierarchy` (retry once after a pause if empty) and file views INTO
+the existing default folders. Create a folder only when it genuinely does not exist in the hierarchy.
+More generally: check what is there first before creating any container -- same principle as point dedupe.
 
 When you're organizing (not just typing) an atlas — deciding which folder a view belongs in, or
 setting up a new atlas — use the **Default atlas structure** section of the `atlas-language` skill.
