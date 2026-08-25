@@ -32,6 +32,25 @@ swap is a one-Path change, "all payroll systems" queries hit it, and accountabil
    the maintained-by fact lives ONLY on the creates_output/provided_by edges
 ```
 
+**Description hygiene (same principle, applied to the description property).** A description is just
+another property of the Point, so it must contain only facts UNIQUE to that Point. Two hard rules:
+
+1. **Never restate a relationship.** If a fact is (or should be) a Path, it does not also go in prose —
+   otherwise replacing the CIO means editing two places and they will desync. A change to Paths must
+   never require a corresponding description edit.
+2. **Factual only.** No value judgments, commentary, quips, or turns of phrase. State what the thing is.
+
+```
+✗  Organization description: "De novo asset manager. CIO: Jane Doe."   (has_role restated in prose)
+✓  description: "De novo asset manager."; Jane Doe ─has_role→ "CIO" carries who holds the seat
+
+✗  step description: "...the paper trail regulators ask for — especially load-bearing here"  (commentary)
+✓  "Document the valuation methodology and rationale for each Level 3 position."
+```
+
+Allowed in descriptions: facts with no structural home in the ontology (e.g. "primary regulator" where
+no regulates Path type exists), ILLUSTRATIVE/placeholder flags, and operational ATTACH notes.
+
 Deeper examples: `references/name-by-function.md`, `references/structure-over-prose.md`,
 `references/instance-nodes.md` (actions are per-flow instances; entities are shared singletons — never
 wire one action Point into two flows).
@@ -52,6 +71,14 @@ are Systems reached `provided_by` a Vendor; documents/messages are Artifacts.
 ✗  Step ─uses_resource→ EDI 856               (a message treated as a System)
 ✓  Step ─creates_output→ EDI 856 (Artifact)
 ```
+
+**Granularity test (actions and artifacts alike).** If a Step's description enumerates several actions
+("prepare X, obtain Y, and complete Z"), those are sub-steps hiding in prose — promote the Step to a
+Process and give each action its own Step, especially when the actions have *different* performers.
+Correspondingly, a bundled Artifact splits into component Artifacts exactly when a distinct step or
+actor produces each component; components produced by one actor in one step stay as prose in the
+parent Artifact's description. Apply the line consistently, or the graph says "these components are
+nodes" and "those are text" with no principle behind it.
 
 Deeper examples: `references/dependencies-on-steps.md`, `references/service-as-system.md`,
 `references/artifact-vs-system.md` (EDI X12, NACHA files, 1099/K-1 forms are Artifacts, not Systems),
