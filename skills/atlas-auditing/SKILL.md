@@ -22,7 +22,7 @@ Violation = a process carrying a resource edge that belongs on a leaf step. Fix:
 ### 2. Wrong resource target (Pattern 3) — uses_resource to a non-System
 ```cypher
 MATCH (s:Point {atlasId:$atlasId})-[:PATH {name:'uses_resource'}]->(t:Point)
-WHERE s.deletedAt IS NULL AND t.deletedAt IS NULL AND NOT t.type IN ['System','Equipment','Transport']
+WHERE s.deletedAt IS NULL AND t.deletedAt IS NULL AND NOT t.type IN ['System','Equipment']
 RETURN s.name AS step, t.name AS target, t.type AS target_type
 ```
 Violation = `uses_resource` pointing at an Artifact (use `needs_input`) or a Vendor (use the service-as-System pattern). 
@@ -108,7 +108,7 @@ WITH s, [w IN ['EDI ','NACHA','HL7',' Form',' Letter',' Report',' File',' Messag
 WHERE size(hits) > 0
 RETURN s.name AS suspect_system, hits AS tokens
 ```
-Violation = a Point typed `System` whose name reads like a document or message type (EDI X12 codes, NACHA file, HL7 message, named forms). Fix: re-type as `Artifact` and swap incoming `uses_resource` edges to `creates_output` (sender side) or `needs_input` (receiver side). See `atlas-artifact-vs-system`.
+Violation = a Point typed `System` whose name reads like a document or message type (EDI X12 codes, NACHA file, HL7 message, named forms). Fix: re-type as `Artifact` and swap incoming `uses_resource` edges to `creates_output` (sender side) or `needs_input` (receiver side). See `atlas-modeling` → `references/artifact-vs-system.md`.
 
 ### 11. Orphan Data Tables (no has_table parent)
 ```cypher
