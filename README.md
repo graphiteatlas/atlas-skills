@@ -10,6 +10,7 @@ source for the `graphite-atlas` Claude Code plugin (see `README.plugin.md`).
 | `atlas-modeling` | preflight: the 3 modeling principles, each with its **anti-pattern examples inline** (always in context). Deeper worked examples in `atlas-modeling/references/`. |
 | `atlas-language` | the **Atlas language** — typed vocabulary of Point types, Path types, Properties + the default folder structure + naming rules. |
 | `atlas-auditing` | read-only Cypher health checks — the deterministic backstop that catches principle violations after a build. |
+| `atlas-completeness` | read-only Cypher **absence** checks — what the build never found out, output as an interview script grouped by who can answer. Complements `atlas-auditing`: that one finds what is wrong, this one finds what is missing. |
 
 
 ## How to use
@@ -17,6 +18,7 @@ source for the `graphite-atlas` Claude Code plugin (see `README.plugin.md`).
 - **Before any write to an Atlas:** invoke `atlas-modeling` (3 principles + inline anti-patterns).
 - **To check what types exist / what can connect:** use `atlas-language`.
 - **After a build or edit:** invoke `atlas-auditing`.
+- **Before handing a build to a customer (or when inheriting one):** invoke `atlas-completeness` — run it after `atlas-auditing`, since wrong beats thin.
 
 Each top-level skill folder is symlinked into `~/.claude/skills/` so the Skill tool discovers them
 across all Claude Code sessions. This repo is the source of truth; the symlinks point back.
