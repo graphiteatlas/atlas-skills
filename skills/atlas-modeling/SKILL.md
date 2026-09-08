@@ -110,6 +110,14 @@ responsibility = `accountable_for`).
 
 ---
 
+## Building from documents
+
+When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
+conversation, invoke `atlas-doc-ingest` BEFORE writing anything. Attaching the file and
+citing it has an ordering requirement with no error message: citations written before the
+file finishes indexing are verified against empty text and silently stripped, while the
+write still reports success.
+
 ## After the write: QA
 
 Once the build or edit is done, invoke `atlas-auditing`. It runs a fixed set of read-only Cypher checks that surface
