@@ -104,6 +104,25 @@ transfer of responsibility (both sides modeled), not a notification.
 ✓  CFO (Position) ─accountable_for→ Forecast Process; owned_by is equity only (+ ownership_pct)
 ```
 
+**A point must say something the point beside it does not.** Never mint a second point that restates
+the first. Two points whose names differ only by a word like Issue, Problem, Error, Task or Activity
+are one point and a property, or one point and a path.
+
+```
+X  "Brittleness Issue" (Risk)  +  "Brittleness Remediation" (Step)   (the pair says one thing twice)
+V  "Brittleness Remediation" (Step), with brittleness as the CONDITION under which it runs
+```
+
+A troubleshooting table is defect, cause, remedy. The remedy is the Step; the defect is what makes it
+run, so it belongs on a `followed_by_if` condition or a property. Turning every row into a pair
+doubles the model and adds nothing to it.
+
+**A Risk is a thing that might happen.** It earns a point where the material is genuinely about risk:
+a register, a controls assessment, an audit finding, something with an owner and a mitigation as
+separate concerns. A named defect that a documented step exists to fix is not a risk, it is that
+step's trigger. When in doubt, do not create the Risk. A missing one is a gap the customer can see
+and ask for; a fabricated one is noise they have to find and delete.
+
 Deeper examples: `references/step-membership.md`, `references/handoff-vs-communication.md`,
 `references/ownership-vs-accountability.md` (the two meanings of "owns": equity = `owned_by`,
 responsibility = `accountable_for`).
