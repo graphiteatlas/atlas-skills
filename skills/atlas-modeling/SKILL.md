@@ -129,6 +129,17 @@ responsibility = `accountable_for`).
 
 ---
 
+## Show it before you write it
+
+**A model a human has not seen is not agreed to.** Before writing points and paths to an atlas,
+render the proposal and let them read it: what gets created, what is reused, what could not be
+staged, and the passage each point came from. They say build; then you write exactly that.
+
+Use `atlas-proposal` (internal, in `atlas-tools`). It takes the points/paths/views you composed and
+produces the proposal document as one self-contained HTML file, with no Atlas checkout and no
+dependencies, so it works from any session. Skip it only when the change is a one-off edit to a
+single existing point that is trivially reversible.
+
 ## Building from documents
 
 When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
