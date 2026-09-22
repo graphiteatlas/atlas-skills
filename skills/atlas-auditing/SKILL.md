@@ -131,3 +131,20 @@ Violation = a step marked `execution_mode: 'system'` (runs without a human) that
 
 **Output:** a short scorecard (one line per check: pass / N findings), then the findings, then proposed fixes. Confirm before mutating.
 
+---
+
+## After the audit: the graph is not the deliverable
+
+These checks end at the graph. They say nothing about whether a change reached the
+document, map, book or site the reader actually sees.
+
+**A renderer can assert a fact three ways:** from a property, from graph structure, or from
+a hardcoded string selected on a point's name. Only the first two move when the graph
+moves. The third is invisible to every check above, so a clean audit can sit behind an
+output still printing a fact you just retired.
+
+**So after any change a reader will see, grep the renderer for the rendered string, not
+only for the property name, then regenerate and look at the output.** Retirement is the
+case that bites: adding a fact usually fails loudly when it is missing, while retiring one
+fails silently when a literal keeps printing it.
+
