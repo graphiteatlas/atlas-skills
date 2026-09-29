@@ -11,6 +11,24 @@ anything else; deeper worked examples are in `references/`.
 
 *Terms: Atlas calls graph nodes **Points** and edges **Paths**. This skill uses Points and Paths.*
 
+## Which skill answers your question
+
+This one is the default and usually enough. Escalate only when it genuinely does not answer:
+
+| You are | Use |
+|---|---|
+| Modelling something (the common case) | **this skill**: the three principles below |
+| Unsure a type or path exists, or what may connect to what | `atlas-language`, or `lookup_ontology`, which reads live |
+| Refused by the ontology, or unable to say something true about the business | `atlas-language`, for what is sayable and what may connect. If the thing you need has no type, that is a gap to report, not one to model around |
+| Building from a PDF, transcript or spreadsheet | `atlas-build` FIRST, for what Atlas can read and the attach-then-cite ordering |
+| Ready to show a human before writing | `atlas-build`, step 4 |
+| Writing the approved change, and it is more than ~20 points or paths | `atlas-build`, step 5: go over the HTTP API, not through individual tool calls |
+| Finished writing | `atlas-auditing` for violations, `atlas-completeness` for absences |
+
+**Record a convention when you settle it, not after it has been settled twice.** The same
+questions arrive repeatedly and get answered slightly differently each time, which is invisible
+within one session and obvious across an atlas. Keep the answers somewhere they can be reread.
+
 ---
 
 ## 1. Name by function
@@ -51,9 +69,134 @@ another property of the Point, so it must contain only facts UNIQUE to that Poin
 Allowed in descriptions: facts with no structural home in the ontology (e.g. "primary regulator" where
 no regulates Path type exists), ILLUSTRATIVE/placeholder flags, and operational ATTACH notes.
 
+### Property governance: reuse definitions, not arbitrary keys
+
+**Do not invent a property to give explanatory prose the appearance of structure.**
+`review_considerations`, `review_topics`, and `review_checks` are not three useful conventions
+merely because the API accepts them. Structure over prose means modeling relationships as Paths;
+it does not mean turning every sentence or checklist into a new field.
+
+Choose the representation by purpose:
+
+- **Typed Paths:** performers, inputs, outputs, systems, membership, and dependencies. Do not
+  hide these in descriptions or custom properties.
+- **Description:** concise factual scope and explanatory review criteria belonging to the Point.
+  Do not duplicate facts already represented by Paths or defined properties.
+- **Defined properties:** values that a concrete query, validation rule, comparison, or automation
+  needs to consume consistently. Reuse the ontology or an explicitly approved modeling convention;
+  an arbitrary existing key is not proof that it is a standard.
+- **Reference material:** long checklists, instructions, diagrams, and illustrative cases. Preserve
+  them in an appropriately linked Artifact or uploaded Document, following section 2b. Distinct
+  actions with their own performers, inputs, or outputs still deserve Steps, not a buried checklist.
+
+Before proposing a new property, state its **name, meaning, applicable Point/Path types, value
+type and cardinality, allowed values or units where relevant, example, and intended consumer**.
+Check existing definitions for synonyms. Show the proposed convention for approval before using
+it as an established field. Record an approved definition once in the appropriate shared or
+account-specific modeling rules; do not silently extend the global ontology for one account.
+
+Illustrative examples:
+
+```
+✗ Review Project Complexity Sheet
+    review_considerations: [complexity rating, current workload, team assignment]
+✓ description: "Reviews project complexity and current workload to inform team assignment."
+  Keep the performer, sheet input, and subsequent assignment as typed Paths.
+
+✗ Pre-Construction Meeting
+    agenda_topics: [safety, access, payment, schedule, permits, ...]
+  (a one-off field no consumer has agreed to read)
+✓ A concise description of the meeting's scope; the detailed agenda stays in its reference.
+  If agenda items must drive a checklist application, propose a defined schema first.
+
+✗ Review Construction Sequence
+    example_scope: "These diagrams are examples, not mandatory steps."
+✓ Put that interpretation in the proposal/reference caption, not a new business-data field.
+
+✓ Artifact ─uses_resource {usage_role: "storage"}→ Document Store
+  When usage_role is an approved convention, it serves a real consumer: distinguishing
+  storage from authoring or delivery. Do not replace that distinction with free-form prose.
+```
+
+**Migration is separate from the rule.** Do not delete existing custom properties or move their
+values automatically. Inspect consumers and evidence, preserve information, and propose exact
+before/after changes. A missing value stays missing; do not populate a field just to complete a table.
+
 Deeper examples: `references/name-by-function.md`, `references/structure-over-prose.md`,
 `references/instance-nodes.md` (actions are per-flow instances; entities are shared singletons — never
 wire one action Point into two flows).
+
+### 1a. Abbreviations: full words in the name, short form in `aliases`
+
+**The name carries the words a stranger can read. The short form goes in `aliases`.**
+
+```
+✗  "FO Support"                       (reader outside the company cannot expand it)
+✓  "Field Operations Support"   properties: aliases: ["FO Support"]
+
+✗  "CM Daily Reports"
+✓  "Construction Management Daily Reports"   aliases: ["CM Daily Reports"]
+```
+
+This is the same principle as name-by-function, applied to legibility. An SOP or process book is
+read by people who were not in the room, including new starters, auditors and the customer's own
+other departments. An unexpanded abbreviation makes them guess. The alias keeps the short form
+searchable, so the people who do use it lose nothing.
+
+**The exception: when the letters ARE the name.** `Director EHS`, `RFI`, `NTP`, `PCO`. If the room
+says the letters and nobody says the expansion aloud, the letters are the name. Test: ask what the
+expansion is. If people hesitate, it is a name, not an abbreviation.
+
+**`aliases` holds alternate names for the SAME thing.** Four kinds legitimately belong there:
+abbreviation (`PM`), spoken synonym (`post-mortem` for the closeout meeting), prior name
+(`Change Order Spreadsheet` / `Change Order Log`), and informal reference (`the field`).
+
+Three things do NOT belong there, and all three were found in a real production atlas:
+
+```
+✗  aliases: "Jane Dow"             on Person "Jane Doe"         (a MISSPELLING, not an alias.
+                                                                 Fix the source, do not enshrine it)
+✗  aliases: "Jane's submittal log" on "Submittal Spreadsheet"   (one person's INSTANCE of the thing.
+                                                                 If it differs, it is another Point)
+✗  aliases: "Build Project in Procore" on Process "Project Setup"
+                                                                (a DIFFERENT CONCEPT, and it bakes a
+                                                                 vendor in through the back door)
+```
+
+The test: **would a reader accept the alias as a name for this Point, out loud, in a sentence?**
+If not, it is not an alias.
+
+**Two mechanical traps.**
+
+`aliases` is **not declared in the ontology's property list**, though it is used widely and the
+Navigator prompt documents it. So nothing validates it. Write it carefully; you will get no error.
+
+`aliases` is **array-valued, and `update_point` merges at the property level, not inside the
+value.** Writing `aliases: ["FO"]` onto a Point that already holds `["FO", "the field"]` REPLACES
+the array and silently loses the second entry. Always read the existing value first and write the
+union. This is the single easiest way to destroy data in an otherwise safe property merge.
+
+**Store one shape.** The same atlas held both `aliases: ["FO", "the field"]` and `aliases: PO`, a
+bare string. Always write a list, even for one entry, so every consumer can iterate without
+type-checking.
+
+### 1b. Suffixes are a disambiguator, not a house style
+
+When two Points must share a natural name because they are genuinely different things, suffix
+BOTH with what they are, and only then.
+
+```
+✓  "Construction Management Process"  (Process, holds the work)
+✓  "Construction Management Team"     (Group, holds the people)
+```
+
+Do not append a type suffix to a name that is already unique. A suffix on every Point is noise and
+makes the map harder to read, not clearer.
+
+**Why this is not cosmetic: `batch_create` resolves path endpoints BY NAME.** Two Points sharing a
+name means the write picks one, silently, and it may be the wrong type. A `has_step` aimed at a
+Group fails validation; worse cases succeed and attach work to the wrong Point. Run a duplicate-name
+check before any batch write.
 
 ## 2. Attach at the right level and type
 
@@ -72,6 +215,47 @@ are Systems reached `provided_by` a Vendor; documents/messages are Artifacts.
 ✓  Step ─creates_output→ EDI 856 (Artifact)
 ```
 
+**Where the system attaches: the artifact, or the tool the step runs in. Never by inference.**
+A step that fills in a spreadsheet does not "use Excel"; the spreadsheet lives in Excel. Put
+the system on the artifact, and the step reaches it through what it creates or needs:
+
+```
+✗  Complete Project Complexity Sheet ─uses_resource→ Excel     (inferred from the document)
+✓  Complete Project Complexity Sheet ─creates_output→ Project Complexity Sheet
+   Project Complexity Sheet ─uses_resource→ Excel               (the document lives there)
+
+✗  Send Submittal to Client ─uses_resource→ Microsoft Outlook  (a mail client hung on a step
+                                                               that merely sends; vendor in the name)
+✗  Send Submittal to Client  properties: channel: email        (a fact with a structural home,
+                                                               written as prose)
+✓  Submittal ─uses_resource→ Email (System) ─provided_by→ Microsoft
+   (the document travels by email; the step reaches Email through what it sends)
+✓  Monitor Claims Inbox ─uses_resource→ Email                  (the step IS watching a mailbox,
+                                                               so the tool belongs to the step)
+```
+
+How a thing moves is a relationship, not a property. `channel:` on a point restates an edge
+that should exist, and then the two desync. The same holds for "lives in a shared folder":
+`Artifact -uses_resource-> Dropbox`, never `location: Dropbox`.
+
+A step carries `uses_resource` itself only when the step is **performed inside a tool**, and
+then the target is the **module**, not the suite, reached `provided_by` its Vendor:
+
+```
+✗  Review and Approve Submittal ─uses_resource→ Procore        (a suite of thirty tools)
+✓  Review and Approve Submittal ─uses_resource→ Procore Submittals ─uses_resource→ Procore
+   Procore Submittals ─provided_by→ Procore                     (display_name: module)
+```
+
+Test: *could the step be done with the document open in a different application?* If yes, the
+system belongs to the document. If the step cannot exist without the tool (a workflow
+approval, a site check in a field quality app, an e-signature), the tool belongs to the step. Then "what
+runs on Excel" answers through artifacts and "what runs in Procore Submittals" through steps,
+and neither answer contains a guess.
+
+This is **pass 3** of the build (below), and the coverage question for it is two questions,
+not one: does every artifact have a system, and does every in-tool step name its module.
+
 **Granularity test (actions and artifacts alike).** If a Step's description enumerates several actions
 ("prepare X, obtain Y, and complete Z"), those are sub-steps hiding in prose — promote the Step to a
 Process and give each action its own Step, especially when the actions have *different* performers.
@@ -79,6 +263,108 @@ Correspondingly, a bundled Artifact splits into component Artifacts exactly when
 actor produces each component; components produced by one actor in one step stay as prose in the
 parent Artifact's description. Apply the line consistently, or the graph says "these components are
 nodes" and "those are text" with no principle behind it.
+
+### 2a. A view is a unit of review, so decompose the process, not the picture
+
+**A flow view holds one subgraph a person can check in one look.** When a process view grows past
+that, the view is the symptom; the disease is a process that was never decomposed. Fix it upstream:
+promote the phases to child Processes, wire `parent -has_step-> child`, and give each child its own
+view in a folder named for the parent. Splitting the picture alone leaves a 30-step process pretending
+to be atomic, and every later query inherits that.
+
+```
+X  Process "HUD Liquidation Claims" -has_step-> 30 Steps, all in one view
+   (nobody reviews this; they scroll it, agree, and miss the branch that is wrong)
+
+V  Process "HUD Liquidation Claims" -has_step-> "Curtailment Review" (Process) -has_step-> 5 Steps
+   one view per child Process, nested in a "HUD Liquidation Claims" folder
+```
+
+**Do not make this a point count.** An inventory view (Artifacts, Systems, Org) is a list, and a list
+stays readable at thirty. A *sequence* stops being reviewable at about a dozen, because the reader has
+to hold the order in their head while they pan. The rule applies to flow views only. A rule that counts
+points flags the wrong views, and people learn to ignore it.
+
+The test is behavioural, not numeric: **can a reviewer read this view and say "yes, that is how it
+works" without panning to keep the sequence straight?** If they pan, it is two views. As rough
+guidance, a flow view wants five to twelve **actions** (Step, Decision, Approval, Review, Handoff),
+and a Process past about fifteen steps is asking what its subprocesses are. Guidance, not a gate.
+
+**Count actions, not points.** A view also holds the Process node, the performers and the artifacts,
+so twelve actions is comfortably past twenty points. Briefing someone with a *point* budget instead
+of an *action* budget forces over-splitting: on one custodial-accounting build a "4 to 9 points"
+brief produced twenty-five child processes with a median of four actions, one of them holding a
+single step. A Process that exists only to justify a view is the failure of this rule, not its application.
+
+**The floor matters as much as the ceiling.** Below about three actions, ask whether the business
+would name this separately. If the name is one you coined, merge it back up.
+
+**The limit that keeps this a judgment call: never split into a subprocess the business has no name
+for.** If nobody in the room calls those six steps anything, "Claim Preparation Phase" is vocabulary
+you invented, and every reader has to translate it back to what they actually say. A slightly
+oversized view beats a fictional subprocess. Decompose along the seams the business already names
+(the handoff, the system change, the role change, the phase they say out loud); if there is no seam,
+leave it whole and say so.
+
+### 2b. Reference documents: the point type follows whether you hold the file
+
+**A `Document` is a file that was uploaded.** The ontology defines it as created for every
+uploaded file, so a Document point with no bytes behind it contradicts its own type. Which
+point type a referenced document gets therefore depends on whether it is in the atlas:
+
+| The document is | Point | Path from the thing that references it |
+|---|---|---|
+| the **source** the model was built from | `Document` (created by the upload) | `extracted_from`, carrying the citations |
+| an **authority you uploaded** | `Document` | `has_attachment` (declared `* -> Document`) |
+| an **authority you only link to** | `Artifact`, tag `knowledge_doc`, `url` property | `needs_input`, from the step that opens it |
+
+**Anti-pattern: confusing modeling evidence with an operational resource.** A guide, transcript,
+sticky-note photograph, or SOP that the agent reads to construct the graph is not automatically
+something the business uses to perform the work. Its existence, title, or instructional wording
+does not establish a `needs_input` or `uses_resource` Path. The linked-authority pattern above
+applies only when its operational use is evidenced, not as a fallback for an unuploaded source.
+
+```
+Source statement in a startup guide: "Check the construction sequence for access conflicts."
+
+✗ Create Startup Guide [Artifact] merely because it supplied that statement, then:
+  Review Construction Sequence [Review] ─uses_resource→ Startup Guide [Artifact]
+  (asserts use of the guide that the source never established)
+
+✓ Upload the source, then record provenance:
+  Review Construction Sequence [Review] ─extracted_from→ Startup Guide [Document]
+  Attach a supporting quotation only after ingestion and verification.
+
+Separate statement: "Open the startup checklist and complete each required item."
+✓ This DOES evidence an operational input. Model that use with the appropriate
+  reference-document pattern above, separately from provenance.
+```
+
+If the source is not uploaded, retain its URL, local reference and supporting passage in the
+proposal/evidence record. Do not fabricate a file-backed Document or create an operational
+Artifact just to give the source a graph home. Selected diagrams may be attached as reference
+Documents without implying that every performer consults them or that their examples describe
+every job. One source can support both provenance and operational use, but each requires its own
+evidence; do not create duplicate representations solely to express the two roles.
+
+**Test:** *Does the evidence say the performer uses this material, or only that the modeler did?*
+
+**Upload when someone needs to read it from inside the atlas; link when they do not.**
+Attaching costs ingestion, storage and a point, and pays in retrieval and citation. For a
+mapping guide a step follows field by field, upload. For a 400-page handbook nobody opens per
+transaction, link.
+
+**A citation list at the back of an SOP is a bibliography, not a relation.** Where a source
+lists governing guidance without mapping any of it to a step, put the list in the governed
+Process's description and model nothing: every citation would otherwise attach to the parent
+and "what must we review if this changes" would answer "all of it", which the description
+already says. Where the rules ARE the subject (a compliance matrix, a control register), model
+each obligation as a **Step carrying its citation and deadline as properties**.
+
+Prior art, if you need to argue it: Dublin Core's `dcterms:conformsTo` relates a **resource to
+a standard**, document to document, not a process to a rule. PROV-O's `wasDerivedFrom` is our
+`extracted_from`. FRBR's work/expression/manifestation split is why a blank form and a
+completed form are one Artifact, not two.
 
 Deeper examples: `references/dependencies-on-steps.md`, `references/service-as-system.md`,
 `references/artifact-vs-system.md` (EDI X12, NACHA files, 1099/K-1 forms are Artifacts, not Systems),
@@ -104,21 +390,85 @@ transfer of responsibility (both sides modeled), not a notification.
 ✓  CFO (Position) ─accountable_for→ Forecast Process; owned_by is equity only (+ ownership_pct)
 ```
 
+**A point must say something the point beside it does not.** Never mint a second point that restates
+the first. Two points whose names differ only by a word like Issue, Problem, Error, Task or Activity
+are one point and a property, or one point and a path.
+
+```
+X  "Brittleness Issue" (Risk)  +  "Brittleness Remediation" (Step)   (the pair says one thing twice)
+V  "Brittleness Remediation" (Step), with brittleness as the CONDITION under which it runs
+```
+
+A troubleshooting table is defect, cause, remedy. The remedy is the Step; the defect is what makes it
+run, so it belongs on a `followed_by_if` condition or a property. Turning every row into a pair
+doubles the model and adds nothing to it.
+
+**A Risk is a thing that might happen.** It earns a point where the material is genuinely about risk:
+a register, a controls assessment, an audit finding, something with an owner and a mitigation as
+separate concerns. A named defect that a documented step exists to fix is not a risk, it is that
+step's trigger. When in doubt, do not create the Risk. A missing one is a gap the customer can see
+and ask for; a fabricated one is noise they have to find and delete.
+
 Deeper examples: `references/step-membership.md`, `references/handoff-vs-communication.md`,
 `references/ownership-vs-accountability.md` (the two meanings of "owns": equity = `owned_by`,
 responsibility = `accountable_for`).
 
 ---
 
+## Build in passes, not in one sweep
+
+A room, a transcript or a document gives you **sequence** first, because that is how people
+tell a story: what happens, then what happens next. It almost never gives you inputs,
+outputs, systems or measures unless asked. So a model built in one sweep from a live source
+arrives with the order right and everything else missing. Measured on a real session: 193
+actions captured, 113 with neither an input nor an output, 142 with no system.
+
+Model in four passes, each a question asked of every action, and do not call the build
+done before pass 4:
+
+1. **Sequence.** What happens, in what order, who performs it. This is the capture.
+2. **Inputs and outputs.** For every action: what does it need, what does it produce. Most
+   answers are already in the action's own name ("Complete Project Complexity Sheet"
+   produces the Project Complexity Sheet). Where the artifact is not yet a Point, that is
+   the moment to create it: a real document, not a phrase.
+3. **Systems.** For every artifact: where does it live (`Artifact -uses_resource-> System`).
+   For every action performed inside a tool: which module (`Step -uses_resource-> Module`,
+   module `provided_by` vendor). A step that only touches a document gets no system edge of
+   its own; it reaches the system through the document. This pass has the least source
+   evidence, so mark inferences `draft` and leave gaps visible rather than guessing.
+4. **Measures.** For every process: what number says it went well, and which step produces
+   that number. Attach the metric to the producing step, not to the report that displays it.
+
+Each pass is a query you can run before and after ("actions with no output", "artifacts
+with no system"), so progress is a count, not a feeling. The counts are also the honest
+statement of what the source did not say, which belongs in the proposal as gaps.
+
+## Show it before you write it
+
+**A model a human has not seen is not agreed to.** Before writing points and paths to an atlas,
+render the proposal and let them read it: what gets created, what is reused, what could not be
+staged, and the passage each point came from. They say build; then you write exactly that.
+
+If you have an Atlas, the app's own proposal screen does this: it reads the staged revision and
+shows you the change before it is applied. From an agent, put whatever you can in front of the
+person: a rendered document, a file-based mock of the folders and views, or a plain list of the
+Points and Paths you are about to create. Skip it only when the change is a one-off edit to a
+single existing point that is trivially reversible.
+
+**Then write it over the HTTP API if it is large.** Past roughly twenty points or paths,
+composing individual tool calls means emitting every payload into the conversation and receiving it
+back again; one real build burned about 150,000 tokens that way before switching. Read the API's own
+definitions rather than assuming the tool arguments carry across: **the HTTP payload shapes differ
+from the MCP tool shapes**. Check the batch for duplicate names and unverifiable quotes before
+sending. How the approved change is written never changes whether it was approved.
+
 ## Building from documents
 
 When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
-conversation, invoke `atlas-build` BEFORE writing anything. Attaching the file and citing
-it has an ordering requirement with no error message: citations written before the file
-finishes indexing are verified against empty text and silently stripped, while the write
-still reports success. `atlas-build` also covers what Atlas can and cannot read, so a
-format it cannot extract does not upload successfully with a warning string in place of
-the content.
+conversation, invoke `atlas-build` BEFORE writing anything. Attaching the file and
+citing it has an ordering requirement with no error message: citations written before the
+file finishes indexing are verified against empty text and silently stripped, while the
+write still reports success.
 
 ## After the write: QA
 
