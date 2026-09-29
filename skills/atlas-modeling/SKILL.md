@@ -113,10 +113,12 @@ responsibility = `accountable_for`).
 ## Building from documents
 
 When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
-conversation, invoke `atlas-doc-ingest` BEFORE writing anything. Attaching the file and
-citing it has an ordering requirement with no error message: citations written before the
-file finishes indexing are verified against empty text and silently stripped, while the
-write still reports success.
+conversation, invoke `atlas-build` BEFORE writing anything. Attaching the file and citing
+it has an ordering requirement with no error message: citations written before the file
+finishes indexing are verified against empty text and silently stripped, while the write
+still reports success. `atlas-build` also covers what Atlas can and cannot read, so a
+format it cannot extract does not upload successfully with a warning string in place of
+the content.
 
 ## After the write: QA
 
