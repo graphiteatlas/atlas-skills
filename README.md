@@ -9,6 +9,7 @@ source for the `graphite-atlas` Claude Code plugin (see `README.plugin.md`).
 |---|---|
 | `atlas-modeling` | preflight: the 3 modeling principles, each with its **anti-pattern examples inline** (always in context). Deeper worked examples in `atlas-modeling/references/`. |
 | `atlas-language` | the **Atlas language** — typed vocabulary of Point types, Path types, Properties + the default folder structure + naming rules. |
+| `atlas-build` | building FROM documents: what Atlas can read, the attach-then-cite ordering that fails silently, choosing the unit of work, proposing before writing, and verifying by readback. |
 | `atlas-auditing` | read-only Cypher health checks — the deterministic backstop that catches principle violations after a build. |
 | `atlas-completeness` | read-only Cypher **absence** checks — what the build never found out, output as an interview script grouped by who can answer. Complements `atlas-auditing`: that one finds what is wrong, this one finds what is missing. |
 
@@ -17,6 +18,9 @@ source for the `graphite-atlas` Claude Code plugin (see `README.plugin.md`).
 
 - **Before any write to an Atlas:** invoke `atlas-modeling` (3 principles + inline anti-patterns).
 - **To check what types exist / what can connect:** use `atlas-language`.
+- **Building from a PDF, transcript, SOP or spreadsheet:** invoke `atlas-build` FIRST. The ordering it
+  describes has no error message, and an unreadable format uploads successfully with a warning string
+  where the content should be.
 - **After a build or edit:** invoke `atlas-auditing`.
 - **Before handing a build to a customer (or when inheriting one):** invoke `atlas-completeness` — run it after `atlas-auditing`, since wrong beats thin.
 
