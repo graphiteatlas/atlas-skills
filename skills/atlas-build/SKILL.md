@@ -167,6 +167,12 @@ script rather than through individual tool calls: it is faster, it is resumable,
 and a batch that fails tells you where. Write it phased, with state, so a failure
 halfway does not mean starting again.
 
+**The HTTP payload shapes are not the MCP tool shapes.** Read the API's own
+definitions rather than assuming the tool arguments carry across; they do not, and
+the mismatch surfaces as a rejected batch rather than a helpful error. Check the
+batch for duplicate names and unverifiable quotes before sending it: past twenty
+items, finding out afterwards means reading the graph back to work out what landed.
+
 **Refused by the ontology?** Check `atlas-language` for what is sayable and which
 types may connect. If the thing you need to express genuinely has no type, that is
 a gap in the ontology, not something to model around with a near-miss type. Say so
