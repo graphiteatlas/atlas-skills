@@ -193,9 +193,31 @@ the hierarchy.
 Then run `atlas-auditing` for what is wrong, and `atlas-completeness` for what is
 missing. In that order: wrong beats thin.
 
+## Reading a document that is already in the atlas
+
+**Atlas's own retrieval tools are Navigator-only.** `search_document`,
+`read_document_pages` and `get_document_overview` exist in the in-app Navigator and
+are **not** exposed over MCP. Some MCP tool descriptions mention `search_document` in
+passing; that describes what indexing enables in the app, not a tool you can call
+from here.
+
+Fetch the file instead. `list_files` returns a `viewerUrl` per file and accepts the
+same bearer token as any other call, so download it and read it locally.
+
+That is usually better anyway. You read the real document rather than a retrieved
+snippet, and **a quote taken from the file you just read is far more likely to match
+the extracted text verbatim**, which is what the citation verifier requires. What it
+costs you is the chunk index: for a large document, search your local copy rather
+than expecting the atlas to search it for you.
+
 ## Auditing an atlas that already has documents
 
 `list_paths` reports `citation_count` only where citations exist, so the paths
-missing it are your gap list. Walk the edges into each Document Point and for each
-uncited one either find the supporting sentence or say plainly that the document
-does not support it. An uncited claim that nobody flags becomes a fact by default.
+missing it are your gap list. Walk the edges into each Document Point and, for each
+uncited one, either find the supporting sentence or say plainly that the document
+does not support the claim.
+
+**An uncited point is not a failure to be fixed by stretching a quote.** A point the
+document genuinely does not establish should stay uncited, and is worth reporting as
+such. An uncited claim that nobody flags becomes a fact by default, and a stretched
+quote is worse than an honest gap: it looks like evidence.
