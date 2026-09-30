@@ -306,6 +306,34 @@ oversized view beats a fictional subprocess. Decompose along the seams the busin
 (the handoff, the system change, the role change, the phase they say out loud); if there is no seam,
 leave it whole and say so.
 
+**One connected flow per view.** A flow view shows one **connected component**: every action in it is
+reachable from every other along the sequence paths (`followed_by`, `followed_by_if`), ignoring
+direction. Two or more chains sitting side by side with no path between them are **disconnected
+components**, or **fragments**; a single unlinked action is an **isolated node**. In process-modeling
+terms the view is not **well-formed**: there is no single path from its start to its end. (Process
+theory calls the stronger version **soundness**: every step lies on some path from start to end.)
+
+```
+X  View "Definition and Planning": [Line of Business Engagement -> Vendor Engagement]
+   [Within 20%? -> Present to Steering Committee -> SteerCo Approval -> Cancel Project]
+   [Client Engagement]   [Provide Documentation...]      <- four fragments, no path between them
+
+V  one entry, one or more exits, every action on a path between them; parallel work branches
+   from a common step and rejoins (or ends) explicitly
+```
+
+A fragment means one of three things, and each has a different fix:
+
+- **Missing sequence.** The steps do follow each other and nobody recorded it. Ask, then wire it.
+- **Parallel work.** The chains run at the same time. Branch them from the step that starts them and
+  join them where they meet, or, if their order is genuinely unknown, show them in a named container
+  with no implied arrows (see atlas-process-book).
+- **Two processes in one view.** The chains belong to different processes or phases. Split the view
+  along that seam (2a), and link across with a hyperlink to the other view, not a floating box.
+
+Never "fix" a fragment by inventing a `followed_by` nobody stated. An honest disconnected view with a
+question attached beats a connected view that is wrong.
+
 ### 2b. Reference documents: the point type follows whether you hold the file
 
 **A `Document` is a file that was uploaded.** The ontology defines it as created for every
