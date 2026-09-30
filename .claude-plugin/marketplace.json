@@ -8,7 +8,7 @@
     {
       "name": "graphite-atlas",
       "source": "./",
-      "description": "Atlas modeling skills + MCP server, bundled \u2014 tools plus the know-how to use them well."
+      "description": "Atlas modeling skills + MCP server, bundled. Tools plus the know-how to use them well."
     }
   ],
   "description": "Skills that teach AI agents to model well in Graphite Atlas: the Atlas language, modeling principles, and audit checks, bundled with the Atlas MCP server."
