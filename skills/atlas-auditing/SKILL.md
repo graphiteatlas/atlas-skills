@@ -133,6 +133,18 @@ Violation = a step marked `execution_mode: 'system'` (runs without a human) that
 
 ---
 
+### 13. Fragmented flow views (more than one connected component)
+
+Views live outside the graph, so this is a per-view check, not one Cypher query. For each flow view
+(`list_views`, then `get_view_points`), take its actions (Step, Decision, Approval, Review, Handoff)
+and the `followed_by` / `followed_by_if` paths between them, and count connected components
+(ignore direction; `mage_connected_components` on the subgraph, or a union-find over the pairs).
+
+Violation = a flow view with more than one component, or with an isolated action. Report each
+fragment with its first and last action. Fix: see atlas-modeling 2a, "One connected flow per view":
+missing sequence, parallel work, or two processes in one view. Never invent a sequence to pass the
+check. Inventory views (Org, Systems, Artifacts) are exempt.
+
 ## After the audit: the graph is not the deliverable
 
 These checks end at the graph. They say nothing about whether a change reached the
