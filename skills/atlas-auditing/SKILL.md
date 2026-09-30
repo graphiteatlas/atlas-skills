@@ -135,10 +135,23 @@ Violation = a step marked `execution_mode: 'system'` (runs without a human) that
 
 ### 13. Fragmented flow views (more than one connected component)
 
-Views live outside the graph, so this is a per-view check, not one Cypher query. For each flow view
-(`list_views`, then `get_view_points`), take its actions (Step, Decision, Approval, Review, Handoff)
-and the `followed_by` / `followed_by_if` paths between them, and count connected components
-(ignore direction; `mage_connected_components` on the subgraph, or a union-find over the pairs).
+Views live outside the graph, so this is a per-view check, not one Cypher query.
+
+**With atlas-tools, run the script** (it does all of the below, for every view):
+
+    python3 atlas-tools/scripts/view-connectivity.py <tenant> <atlasId> [--view <viewId>] [--json]
+
+Exit **0** clean, **1** findings, **2** could not see the data. **Treat 2 as a failure, never a pass**:
+it means a response came back in a shape the script could not read. Besides fragments it reports
+**hand-offs OUT and IN**: sequence paths that leave the view, or enter it, from a card not on the
+canvas. Those read as orphans on screen even when the view is one component, so they are findings
+too (show the neighbour's card as entry or exit, per atlas-modeling 2a). First real run, 2026-09-30:
+it found a stage view that had silently picked up six steps from other stages.
+
+**Without it, by hand:** for each flow view (`list_views`, then `get_view_points`), take its actions
+(Step, Decision, Approval, Review, Handoff) and the `followed_by` / `followed_by_if` paths between
+them, and count connected components (ignore direction; `mage_connected_components` on the subgraph,
+or a union-find over the pairs). Then list sequence paths whose other end is not in the view.
 
 Violation = a flow view with more than one component, or with an isolated action. Report each
 fragment with its first and last action. Fix: see atlas-modeling 2a, "One connected flow per view":
