@@ -145,6 +145,28 @@ fragment with its first and last action. Fix: see atlas-modeling 2a, "One connec
 missing sequence, parallel work, or two processes in one view. Never invent a sequence to pass the
 check. Inventory views (Org, Systems, Artifacts) are exempt.
 
+### 14. Near-duplicate actions (the usual cause of check 13)
+
+A fragmented view is most often not a missing link but a **duplicated step**: a continuation symbol in
+the source diagram (Visio's off-page connector, "home plate", a "go to page 3" box) modeled as a second
+copy of the step instead of a join. Each copy heads its own chain, so one flow draws as two.
+
+```cypher
+MATCH (a:Point), (b:Point)
+WHERE a.atlasId=$atlasId AND b.atlasId=$atlasId AND a.deletedAt IS NULL AND b.deletedAt IS NULL
+  AND a.type IN ['Step','Decision','Approval','Review','Handoff'] AND a.type = b.type AND a.id < b.id
+WITH a, b,
+  trim(toLower(split(a.name,' (')[0])) AS na, trim(toLower(split(b.name,' (')[0])) AS nb
+WHERE na = nb
+RETURN a.name AS first, b.name AS second
+```
+
+It catches case differences ("Are repairs Satisfactory?" / "Are repairs satisfactory?") and a
+parenthetical suffix added to disambiguate ("Receive 92051 Inspection and Invoice (Repair Completion)").
+Violation = a pair that is the same action in the same flow. Fix: merge, keeping every incoming and
+outgoing path. **Not** a violation when the two are genuinely separate instances in different flows:
+actions are per-flow instances (atlas-modeling, instance nodes), so check membership before merging.
+
 ## After the audit: the graph is not the deliverable
 
 These checks end at the graph. They say nothing about whether a change reached the
