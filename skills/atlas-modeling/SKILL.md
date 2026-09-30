@@ -145,6 +145,30 @@ Deeper examples: `references/name-by-function.md`, `references/structure-over-pr
 `references/instance-nodes.md` (actions are per-flow instances; entities are shared singletons — never
 wire one action Point into two flows).
 
+### An action is a verb and an object
+
+**A Step, Review, Approval or Handoff is named by what someone DOES: a verb and its object.** A noun
+phrase is a topic, not an action. "Business Costs" could be a document, a number, a meeting or a task;
+nobody can tell what is done, or when it is finished. The test: **could someone be told to do it, and
+say when they had?** If the name only makes sense with a verb added in your head, add the verb.
+
+```
+X  "Business Costs"                 V  "Estimate Business Costs"
+X  "Technology Impact Review"       V  "Review Technology Impact"
+X  "Client Engagement"              V  "Engage Clients"
+X  "Completion of Benefits"         V  "Confirm Benefits Delivered"
+X  "Steering Committee Approval"    V  "Approve Project"        (performed by Steering Committee)
+```
+
+- **Who does it is not in the name.** The performer is a `performs` path, so "Approve Project" plus
+  the Steering Committee, not "Steering Committee Project Approval".
+- **A Decision names the check, as a verb or a question:** "Check UAT Result", "Check Cost Against
+  Initial Estimate", not "UAT Pass". The outcomes live on the `followed_by_if` branches.
+- **Keep the source's label as an alias** when it is what people say ("QC Pass", "Business Impact
+  Review"), so search finds it and a citation quoting the source still reads naturally.
+- A diagram box label is usually the noun form. Transcribing it verbatim is where this goes wrong
+  most often: the shape told the reader it was an action, and the name alone does not.
+
 ### 1a. Abbreviations: full words in the name, short form in `aliases`
 
 **The name carries the words a stranger can read. The short form goes in `aliases`.**
