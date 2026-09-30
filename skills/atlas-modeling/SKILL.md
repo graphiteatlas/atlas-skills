@@ -66,6 +66,25 @@ another property of the Point, so it must contain only facts UNIQUE to that Poin
 ✓  "Document the valuation methodology and rationale for each Level 3 position."
 ```
 
+3. **Describe the business, not the model or its source.** A description says what the thing IS in
+   the customer's world: what a phase achieves, what a team or role does. Never what it looks like in
+   a diagram ("a lane", "a swimlane", "opens in"), which page or file it came from ("built from the
+   PDF", "page 2"), or the source's own heading pasted in as prose. Provenance lives on `extracted_from`
+   citations; a source's title belongs in `aliases` if people say it out loud.
+
+```
+X  Group "Steering Committee", description: "A lane in the PMO Flow."     (describes the drawing)
+X  Process "Charter and Change Council", description: "Definition and Planning to Council."
+                                                                  (the page title, not what happens)
+X  atlas description: "Built from the intake workflow deck."             (provenance, not the business)
+V  "Committee that decides whether a project goes ahead on its cost-benefit case."
+V  "Sets up the approved project with a charter and a complexity assessment, and gets the
+    go-ahead to define requirements."
+```
+
+The same holds for view and atlas descriptions: a view describes the part of the business it shows,
+not how it renders.
+
 Allowed in descriptions: facts with no structural home in the ontology (e.g. "primary regulator" where
 no regulates Path type exists), ILLUSTRATIVE/placeholder flags, and operational ATTACH notes.
 
