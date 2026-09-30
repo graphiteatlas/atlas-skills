@@ -353,6 +353,17 @@ A fragment means one of three things, and each has a different fix:
 Never "fix" a fragment by inventing a `followed_by` nobody stated. An honest disconnected view with a
 question attached beats a connected view that is wrong.
 
+**A Process is a container, never a card in its own flow.** Do not put a Process point in the view of
+its own steps: every step then draws a `has_step` line back to it, and the flow disappears under the
+spokes. The view already IS the process. A Process card belongs in a flow view only as an entry or
+exit to a DIFFERENT process (the next stage, a sub-process to drill into), where its own steps are
+not in the view and so no `has_step` lines draw. The same holds in a swimlane.
+
+```
+X  view "1 Initiation" holds Process "Initiation" + its 12 steps   (12 has_step spokes)
+V  view "1 Initiation" holds the 12 steps + Process "Charter and Change Council" as the exit
+```
+
 ### 2b. Reference documents: the point type follows whether you hold the file
 
 **A `Document` is a file that was uploaded.** The ontology defines it as created for every
