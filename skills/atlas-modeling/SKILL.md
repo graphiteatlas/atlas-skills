@@ -548,9 +548,12 @@ sending. How the approved change is written never changes whether it was approve
 
 When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
 conversation, invoke `atlas-build` BEFORE writing anything. Attaching the file and
-citing it has an ordering requirement with no error message: citations written before the
-file finishes indexing are verified against empty text and silently stripped, while the
-write still reports success.
+citing it still has an ordering requirement, but it is now enforced rather than silent: a
+write whose citations point at a document that is still being indexed is refused with a
+409 naming the document, and nothing is stored. Wait for indexing to finish and send it
+again. A quote that does not appear in a FINISHED document is still dropped without
+comment, and the path is written without it, because a confidently wrong highlight costs
+more than a missing one.
 
 ## After the write: QA
 
