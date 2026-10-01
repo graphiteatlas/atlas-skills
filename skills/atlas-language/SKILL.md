@@ -42,7 +42,7 @@ A Path with `any` on a side is unconstrained **in the ontology** on that side. T
 | `accountable_for` | Person, Position → Outcome, Process, Step | many-to-one |
 | `has_role` | Person → Position | many-to-many |
 | `has_skill` | any → any | many-to-many |
-| `member_of` | Person, Position, Organization, Agent, Group → Group | many-to-many |
+| `member_of` | Person, Position, Organization, Agent, Group → Group, Organization | many-to-many |
 | `reports_to` | Position, Agent → Position | many-to-many |
 | `owned_by` | Organization, Customer → Organization | many-to-many |
 | `subaccount_of` | Account → Account | many-to-one |
@@ -106,7 +106,7 @@ A new atlas opens with six **default folders** (user-editable) that organize its
 *Modeling judgment and anti-patterns (naming, attachment, typing — with ✓/✗ examples) live in `atlas-modeling`. This section is vocabulary-level composition only: which path types build which structures.*
 
 - **Process flow:** a `Process` owns its steps via `has_step` (membership); order them with `followed_by`. A conditional branch is `followed_by_if` with a `condition` property; a loop is a `followed_by_if` that points back upstream. Use `Decision` for a choice point and `Approval` for a sign-off - not a generic `Step`. What kicks a process off is a `Trigger` that `initiates` the Process (or a Step/Agent/Person). Mark each Step's `execution_mode` (`human` | `system` | `external`) where known.
-- **Actors:** `Person` `has_role` `Position`; `member_of` puts a Person, Position, Organization, Agent, or Group into a `Group`; `Position` (or `Agent`) `reports_to` `Position`; an actor `performs` a `Step`; RACI accountability is `accountable_for` → `Outcome`/`Process`/`Step`. An `Agent` (AI) is a unified actor - it uses the same paths (e.g. `performs`), with its skill doc attached via `has_context`.
+- **Actors:** `Person` `has_role` `Position`; `member_of` puts a Person, Position, Organization, Agent, or Group into a `Group`, or into an `Organization` when the target is the company itself (a department `member_of` its business, and a Person `member_of` the company that employs them); `Position` (or `Agent`) `reports_to` `Position`; an actor `performs` a `Step`; RACI accountability is `accountable_for` → `Outcome`/`Process`/`Step`. An `Agent` (AI) is a unified actor - it uses the same paths (e.g. `performs`), with its skill doc attached via `has_context`.
 - **Resources:** attach `uses_resource` to the **atomic leaf Step**, not the parent Process. A service is a `System` reached `provided_by` a `Vendor` - never Step → Vendor. Documents/messages are `Artifact`s, produced via `creates_output` (not Systems).
 - **Metrics:** `impacts` edges between `Metric`s form an impact/driver tree.
 - **Orgs:** legal-entity structure is `owned_by` (owned `Organization`/`Customer` → owner `Organization`), with `ownership_pct` for partial stakes. Equity only: "who owns this process" is `accountable_for`, not `owned_by`.
