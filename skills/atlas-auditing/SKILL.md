@@ -180,6 +180,61 @@ Violation = a pair that is the same action in the same flow. Fix: merge, keeping
 outgoing path. **Not** a violation when the two are genuinely separate instances in different flows:
 actions are per-flow instances (atlas-modeling, instance nodes), so check membership before merging.
 
+### 15. Process size (a process that should be decomposed)
+
+```cypher
+MATCH (p:Point {atlasId:$atlasId, type:'Process'})-[r:PATH {name:'has_step'}]->(s:Point)
+WHERE p.deletedAt IS NULL AND s.deletedAt IS NULL
+  AND s.type IN ['Step','Decision','Approval','Review','Handoff']
+  AND coalesce(r.model_status, '') <> 'superseded'
+WITH p, count(s) AS steps
+WHERE steps >= 13
+RETURN p.name AS process, steps ORDER BY steps DESC
+```
+
+Violation = 16 or more direct steps (warn from 13). For a parent Process, count its sub-processes
+plus its direct steps as phases: 3 to 9 passes, 16 or more fails. A sub-process under 4 steps is too
+fine unless the business names it or it is an any-order box. Fix: decompose by the cut rules in
+atlas-modeling 2a (`references/large-process-decomposition.md`). The trigger is the process, not
+the view: a 40-step process spread over three views still fails.
+
+### 16. Single entry, single exit (a sub-process cut in the wrong place)
+
+For each sequential sub-process (a Process that has a parent Process and no `ordering: any`), take
+its direct steps and the sequence paths between them. **Entries** are steps no step inside
+precedes; **exits** are steps no step inside follows.
+
+Violation = more than two entries or more than two exits (two is a warning: a parallel start or
+end). An exit that leads nowhere at all is usually a missing `followed_by`, not a bad cut: ask what
+happens next before moving the boundary. Any-order boxes are exempt; their entry is the box.
+
+### 17. A rework loop crossing a sub-process edge
+
+Compute strongly connected components over the live sequence paths between actions
+(`followed_by`, `followed_by_if`); any component with two or more actions is a loop. Violation = a
+loop whose actions belong to more than one sub-process. A loop is one piece of work repeated, so the
+cut goes around it, never through it. A conditional loop inside one sub-process is correct modelling,
+not a finding.
+
+### 18. Fan-out that should be an any-order box
+
+```cypher
+MATCH (s:Point {atlasId:$atlasId})-[r:PATH {name:'followed_by'}]->(t:Point)
+WHERE s.deletedAt IS NULL AND t.deletedAt IS NULL AND coalesce(r.model_status, '') <> 'superseded'
+WITH s, collect(t) AS ts WHERE size(ts) >= 5
+WHERE NONE(a IN ts WHERE EXISTS { MATCH (a)-[q:PATH]->(b) WHERE q.name IN ['followed_by','followed_by_if'] AND b IN ts })
+RETURN s.name AS step, [t IN ts | t.name] AS unordered_successors
+```
+
+Violation = one step pointing to five or more steps with no order among them. They are an any-order
+set: put them in a Process with `ordering: any`, point the step at that box once, and retire the
+individual arrows. Fewer branches are check 9's question (parallel or a mis-modelled choice).
+
+**Reading retired facts:** a retired path carries `model_status: superseded`. Depending on when it was
+retired, that sits natively on the relationship or inside its `properties` text. Filter on both, or
+retired paths count as live. The queries above check the native field; add
+`AND NOT coalesce(r.properties, '') CONTAINS '"model_status":"superseded"'` for older data.
+
 ## After the audit: the graph is not the deliverable
 
 These checks end at the graph. They say nothing about whether a change reached the

@@ -328,10 +328,28 @@ stays readable at thirty. A *sequence* stops being reviewable at about a dozen, 
 to hold the order in their head while they pan. The rule applies to flow views only. A rule that counts
 points flags the wrong views, and people learn to ignore it.
 
-The test is behavioural, not numeric: **can a reviewer read this view and say "yes, that is how it
-works" without panning to keep the sequence straight?** If they pan, it is two views. As rough
-guidance, a flow view wants five to twelve **actions** (Step, Decision, Approval, Review, Handoff),
-and a Process past about fifteen steps is asking what its subprocesses are. Guidance, not a gate.
+The test is behavioural first: **can a reviewer read this view and say "yes, that is how it works"
+without panning to keep the sequence straight?** If they pan, it is two views. Behind it sit
+published limits, and they are a gate, not a suggestion:
+
+| | Pass | Warn | Must decompose |
+|---|---|---|---|
+| Direct steps in a leaf Process | 4 to 12 | 13 to 15 | 16 or more |
+| Phases in a parent Process | 3 to 9 | 10 to 15 | 16 or more |
+| Own actions on a flow view | up to 12 | 13 to 15 | 16 or more |
+| Cards on a flow view | up to 30 | 31 to 49 | 50 or more |
+
+**Where to cut, in order:** at breakpoints (a milestone the business recognises: a document issued,
+a meeting held, a hand-off to another team), keeping a document's producer with its consumer, never
+through a rework loop, with any-order sets boxed as their own sub-process (`ordering: any`), and
+roles only as a tie-breaker. Then check the result: one entry and one exit per sequential
+sub-process, more connections inside it than across its edge, no loop spanning two sub-processes.
+
+**The layout:** a folder named for the process holds `<Process> Overview` first (the spine: the
+sub-processes in sequence, an any-order set as one box), then one view per sub-process in flow
+order, then optionally `Entire <Process>`, the whole thing on one canvas, exempt from the size limits
+but still one connected flow. Those two names are allowed past the one-or-two-word rule. The long
+form, the checks and the sources are in `references/large-process-decomposition.md`.
 
 **Count actions, not points.** A view also holds the Process node, the performers and the artifacts,
 so twelve actions is comfortably past twenty points. Briefing someone with a *point* budget instead
@@ -377,15 +395,17 @@ A fragment means one of three things, and each has a different fix:
 Never "fix" a fragment by inventing a `followed_by` nobody stated. An honest disconnected view with a
 question attached beats a connected view that is wrong.
 
-**A Process is a container, never a card in its own flow.** Do not put a Process point in the view of
-its own steps: every step then draws a `has_step` line back to it, and the flow disappears under the
-spokes. The view already IS the process. A Process card belongs in a flow view only as an entry or
-exit to a DIFFERENT process (the next stage, a sub-process to drill into), where its own steps are
-not in the view and so no `has_step` lines draw. The same holds in a swimlane.
+**A Process on its own view is a container, never a hub.** Atlas draws a Process on a view as a
+container around its steps, so the sub-process view holds its Process and the steps sit inside the
+box. If containers are switched off for a view, every step draws a `has_step` line back to the
+Process instead and the flow disappears under the spokes: then leave the Process off its own view.
+A Process card that holds nothing on the canvas is an entry or exit to a DIFFERENT process (the next
+stage, an any-order box the flow passes through).
 
 ```
-X  view "1 Initiation" holds Process "Initiation" + its 12 steps   (12 has_step spokes)
-V  view "1 Initiation" holds the 12 steps + Process "Charter and Change Council" as the exit
+X  containers off: view "Initiation" holds Process "Initiation" + its 12 steps   (12 spokes)
+V  view "Initiation" holds Process "Initiation" drawn as the box around its 12 steps,
+   plus Process "Charter and Change Council" as the exit card
 ```
 
 ### 2b. Reference documents: the point type follows whether you hold the file
@@ -511,7 +531,7 @@ done before pass 4:
 1. **Sequence.** What happens, in what order, who performs it. This is the capture.
 2. **Inputs and outputs.** For every action: what does it need, what does it produce. Most
    answers are already in the action's own name ("Complete Request Scoring Sheet"
-   produces the Request Scoring Sheet). Where the artifact is not yet a Point, that is
+   produces the Request Scoring Sheet). Where the artifact has no Point, that is
    the moment to create it: a real document, not a phrase.
 3. **Systems.** For every artifact: where does it live (`Artifact -uses_resource-> System`).
    For every action performed inside a tool: which module (`Step -uses_resource-> Module`,
