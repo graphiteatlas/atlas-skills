@@ -79,7 +79,13 @@ Glosses for the newer paths:
 
 ## Properties
 
-39 typed properties attach key/value data to Points and Paths (e.g. `condition` on `followed_by_if`, `execution_mode` on Step — `human` | `system` | `external`, `ownership_pct` on `owned_by`, `columns` / `primary_key` / `schema` / `verified_queries` on Data Table, dates, amounts, status). They live **on the Point/Path**, never as separate nodes. Call `lookup_ontology` for the full property list with `applicableToTypes`.
+42 typed properties attach key/value data to Points and Paths (e.g. `condition` on `followed_by_if`, `execution_mode` on Step — `human` | `system` | `external`, `ownership_pct` on `owned_by`, `columns` / `primary_key` / `schema` / `verified_queries` on Data Table, dates, amounts, status). They live **on the Point/Path**, never as separate nodes. Call `lookup_ontology` for the full property list with `applicableToTypes`.
+
+Three worth knowing by name:
+
+- `ordering` on a **Process**, only value `any`: the steps have **no required order**. A checklist rather than a flow. Absent means the ordinary case, where the sequence paths between the steps are the order. Do not invent `followed_by` paths to impose an order the business does not have.
+- `aliases` on any Point, a list: other names the same thing is known by, so a search finds it under any of them. For names that mean the same point — two names needing different descriptions are two points.
+- `source_ref` on any Point or Path: where a fact came from when the source is **not** a document in the atlas (a transcript, a call, a workshop, an inference). When the source IS an uploaded file, prefer an `extracted_from` path to its Document point carrying a citation, because that is checkable; `source_ref` is for when there is nothing to cite.
 
 ## Default atlas structure (folders)
 
@@ -105,7 +111,7 @@ A new atlas opens with six **default folders** (user-editable) that organize its
 
 *Modeling judgment and anti-patterns (naming, attachment, typing — with ✓/✗ examples) live in `atlas-modeling`. This section is vocabulary-level composition only: which path types build which structures.*
 
-- **Process flow:** a `Process` owns its steps via `has_step` (membership); order them with `followed_by`. A conditional branch is `followed_by_if` with a `condition` property; a loop is a `followed_by_if` that points back upstream. Use `Decision` for a choice point and `Approval` for a sign-off - not a generic `Step`. What kicks a process off is a `Trigger` that `initiates` the Process (or a Step/Agent/Person). Mark each Step's `execution_mode` (`human` | `system` | `external`) where known.
+- **Process flow:** a `Process` owns its steps via `has_step` (membership); order them with `followed_by`. A conditional branch is `followed_by_if` with a `condition` property; a loop is a `followed_by_if` that points back upstream. Use `Decision` for a choice point and `Approval` for a sign-off - not a generic `Step`. What kicks a process off is a `Trigger` that `initiates` the Process (or a Step/Agent/Person). Mark each Step's `execution_mode` (`human` | `system` | `external`) where known. When the steps genuinely have no required order, say so with `ordering: any` on the Process rather than inventing a sequence.
 - **Actors:** `Person` `has_role` `Position`; `member_of` puts a Person, Position, Organization, Agent, or Group into a `Group`, or into an `Organization` when the target is the company itself (a department `member_of` its business, and a Person `member_of` the company that employs them); `Position` (or `Agent`) `reports_to` `Position`; an actor `performs` a `Step`; RACI accountability is `accountable_for` → `Outcome`/`Process`/`Step`. An `Agent` (AI) is a unified actor - it uses the same paths (e.g. `performs`), with its skill doc attached via `has_context`.
 - **Resources:** attach `uses_resource` to the **atomic leaf Step**, not the parent Process. A service is a `System` reached `provided_by` a `Vendor` - never Step → Vendor. Documents/messages are `Artifact`s, produced via `creates_output` (not Systems).
 - **Metrics:** `impacts` edges between `Metric`s form an impact/driver tree.
