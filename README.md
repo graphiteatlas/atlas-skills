@@ -47,6 +47,7 @@ Vendors via `provided_by`. Documents/messages as Artifacts via `creates_output`/
 ### 3. Type by meaning, membership explicit
 Use the right Point type. Sequenced steps need an explicit `has_step`. Handoff is a transfer of
 responsibility, not a notification.
+- `references/large-process-decomposition`: a process past 15 steps is decomposed at business milestones: a spine view, one view per sub-process, the checks and their published basis
 - `references/step-membership` — every member step needs its own `has_step`; `followed_by` is order only
 - `references/handoff-vs-communication` — `Handoff` = responsibility transfer; notifications are plain Steps
 - `references/ownership-vs-accountability` — equity ownership = `owned_by` (+ `ownership_pct`); responsibility = `accountable_for`
