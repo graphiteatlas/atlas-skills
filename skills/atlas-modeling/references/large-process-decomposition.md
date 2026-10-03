@@ -117,6 +117,7 @@ recorded with its reason and stays visible, it does not count as a pass.
 | View structure | each sub-process view is one connected piece, every hand-off shown as an entry or exit card | one piece |
 | Routing paths | outgoing sequence arrows from one card on a view | under 4; 7 or more fails |
 | Folder placement | a sub-process view sits in the folder named for its parent; the spine sits there too and is named `<Process> Overview` | both |
+| Node tree | every process with sub-processes has a folder named for it, `<Process> Overview` first in it, a view or subfolder per sub-process, and `Entire <Process>` last if there is one | all; a missing folder or Overview fails, a missing sub-process view or the wrong order warns |
 | Viewpoint | two views drawing more than 30% of the same steps | none, the whole-process view aside |
 
 The single-entry, single-exit check is the one that most often finds something. An exit that
@@ -138,5 +139,8 @@ the boundary.
 - Vanderfeesten, Reijers, van der Aalst and others on cohesion and coupling metrics for process
   models.
 - IDEF0 (FIPS 183): a parent diagram of 3 to 6 boxes, each decomposed into a child diagram, and
-  For Exposition Only diagrams outside the hierarchy.
+  For Exposition Only diagrams outside the hierarchy. Its node tree (node index), which lists
+  every diagram under its parent, is what the node tree check holds the folders to.
+- ARIS: a value-added chain at the top, each function assigned a detailed process model one
+  level down. The same parent-overview, child-detail layout.
 - BPMN 2.0: the ad-hoc sub-process, the standard's name for an any-order set.
