@@ -18,7 +18,9 @@ skill, and before writing any proposal, not only after:
     python3 an internal script fetch <tenant> <atlasId> --out snap.json
     python3 an internal script score snap.json [--json out.json]
 
-`<tenant>` is the short suffix of the MCP server name (`acme` for `graphite-atlas-acme`); passing the full
+Exceptions (views excused from a test, with the reason) are found at `<client>/audit config/exceptions.json`,
+in the working folder or the nearest parent, up to the repository root. `--exceptions` overrides it, and an
+`--exceptions` path that does not exist exits 2. `<tenant>` is the short suffix of the MCP server name (`acme` for `graphite-atlas-acme`); passing the full
 name fails with a doubled "graphite-atlas-graphite-atlas-..." in the error. `score` also reads a PLANNED snapshot, so compose the change as a modified snapshot and score it
 before anything is written. A worse score than the live atlas is a failed check, not a note.
 Checks 13 to 18 below are the subset you can run by hand without it.
