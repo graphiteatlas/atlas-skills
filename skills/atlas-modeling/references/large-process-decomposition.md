@@ -66,9 +66,19 @@ Process (folder)
   between stage Processes. An any-order sub-process appears as one box. No steps appear on the
   spine except a milestone step that sits directly under the parent.
 - **A sub-process view** holds that sub-process (Atlas draws it as a container around its steps),
-  its steps, the step on either side of it in a neighbouring sub-process (its entry and exit
-  cards), who performs each step, and the documents they create and use. Neighbouring
-  sub-processes appear only on the spine.
+  its steps, who performs each step, the documents they create and use, and the processes on
+  either side of it as **entry and exit boxes**: the preceding and following process, each drawn
+  as one box, not as their steps. *Entry and exit cards* name the same idea at step level (the
+  neighbouring step itself); boxes are the process-level form and the default.
+  - **A box is joined by a drawn arrow** to the view's own process or one of its steps. A box
+    nothing on the canvas joins is a loose card: it tells a reader less than no box at all.
+  - **Where the hand-off exists only step to step** (a step here hands to a step inside another
+    process, and the two processes are not linked), draw the arrow from the handing-off step to
+    the other process's box. It records the hand-off at the level it happens; a link between the
+    processes would assert one the business does not have.
+  - **Never keep a step card beside its box.** A box holding one of its own steps has become a
+    second container, and a view could then gather another process's work one card at a time. If
+    a view seems to need one, the graph is missing a structural fact: raise it, do not edit the view.
 - **The whole-process view** (`Entire <Process>`) is allowed and optional. It is deliberately big,
   so size and overlap checks do not apply to it, but it must still be one connected flow. IDEF0
   has the same idea under the name For Exposition Only diagram: a view outside the hierarchy,
@@ -114,7 +124,7 @@ recorded with its reason and stays visible, it does not count as a pass.
 | Cohesion and coupling | arrows and shared documents inside the sub-process against those crossing its edge | at least 30% inside. Research uses these to compare candidate cuts, so a low score means try another cut |
 | Loops | strongly connected components of the sequence graph | none spans two sub-processes |
 | Box candidates | a step with five or more unconditional successors not ordered among themselves | none; each one found is an any-order set to box |
-| View structure | each sub-process view is one connected piece, every hand-off shown as an entry or exit card | one piece |
+| View structure | each sub-process view is one connected piece, every hand-off shown: the target step, or a process holding it, is on the view as an entry or exit box (or card) joined by a drawn arrow | one piece |
 | Routing paths | outgoing sequence arrows from one card on a view | under 4; 7 or more fails |
 | Folder placement | a sub-process view sits in the folder named for its parent; the spine sits there too and is named `<Process> Overview` | both |
 | Node tree | every process with sub-processes has a folder named for it, `<Process> Overview` first in it, a view or subfolder per sub-process, and `Entire <Process>` last if there is one | all; a missing folder or Overview fails, a missing sub-process view or the wrong order warns |
