@@ -390,7 +390,8 @@ A fragment means one of three things, and each has a different fix:
   join them where they meet, or, if their order is genuinely unknown, show them in a named container
   with no implied arrows (see atlas-process-book).
 - **Two processes in one view.** The chains belong to different processes or phases. Split the view
-  along that seam (2a), and link across with a hyperlink to the other view, not a floating box.
+  along that seam (2a). Show the other process as an entry or exit box joined by an arrow, or link
+  across with a hyperlink to its view; never a floating, unjoined box.
 
 Never "fix" a fragment by inventing a `followed_by` nobody stated. An honest disconnected view with a
 question attached beats a connected view that is wrong.
@@ -399,13 +400,16 @@ question attached beats a connected view that is wrong.
 container around its steps, so the sub-process view holds its Process and the steps sit inside the
 box. If containers are switched off for a view, every step draws a `has_step` line back to the
 Process instead and the flow disappears under the spokes: then leave the Process off its own view.
-A Process card that holds nothing on the canvas is an entry or exit to a DIFFERENT process (the next
-stage, an any-order box the flow passes through).
+A Process card that holds nothing on the canvas is an **entry or exit box**: a DIFFERENT process (the
+previous or next stage, an any-order box the flow passes through) drawn as one box, joined by an
+arrow from or to this view's process or one of its steps, and never shown alongside its own steps.
+The step-level form, the neighbouring step itself, is an entry or exit card; the box is the default.
+Full rule in references/large-process-decomposition.md.
 
 ```
 X  containers off: view "Initiation" holds Process "Initiation" + its 12 steps   (12 spokes)
 V  view "Initiation" holds Process "Initiation" drawn as the box around its 12 steps,
-   plus Process "Charter and Change Council" as the exit card
+   plus Process "Charter and Change Council" as the exit box, joined by an arrow from the last step
 ```
 
 ### 2b. Reference documents: the point type follows whether you hold the file
