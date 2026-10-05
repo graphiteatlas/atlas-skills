@@ -9,6 +9,19 @@ description: Use when asked to audit, review, QA, or health-check a Graphite Atl
 
 **When this applies:** "audit / review / QA this atlas", before sign-off on a build, or when inheriting production-copied content.
 
+**The graph checks are half the audit.** Views and folders live outside the graph, and their rules
+(atlas-modeling 2a: one connected flow per view, view names of one or two words, a folder per
+process with its Overview first, the folder tree mirroring the process tree, empty or unfiled
+views, size limits) are scored by one script. With internal tooling, run it every time you run this
+skill, and before writing any proposal, not only after:
+
+    python3 an internal script fetch <tenant> <atlasId> --out snap.json
+    python3 an internal script score snap.json [--json out.json]
+
+`score` also reads a PLANNED snapshot, so compose the change as a modified snapshot and score it
+before anything is written. A worse score than the live atlas is a failed check, not a note.
+Checks 13 to 18 below are the subset you can run by hand without it.
+
 **Rules for every query:** scope to the atlas (`{atlasId: $atlasId}`), exclude deleted (`deletedAt IS NULL`), read-only (MATCH/RETURN only). Path type is in `r.name`; relationships use the `:PATH` label.
 
 ### 1. Dependency at the wrong level (Pattern 3) — process-level uses_resource
