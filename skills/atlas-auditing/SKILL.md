@@ -18,7 +18,8 @@ skill, and before writing any proposal, not only after:
     python3 an internal script fetch <tenant> <atlasId> --out snap.json
     python3 an internal script score snap.json [--json out.json]
 
-`score` also reads a PLANNED snapshot, so compose the change as a modified snapshot and score it
+`<tenant>` is the short suffix of the MCP server name (`acme` for `graphite-atlas-acme`); passing the full
+name fails with a doubled "graphite-atlas-graphite-atlas-..." in the error. `score` also reads a PLANNED snapshot, so compose the change as a modified snapshot and score it
 before anything is written. A worse score than the live atlas is a failed check, not a note.
 Checks 13 to 18 below are the subset you can run by hand without it.
 
