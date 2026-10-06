@@ -341,7 +341,9 @@ published limits, and they are a gate, not a suggestion:
 
 **Where to cut, in order:** at breakpoints (a milestone the business recognises: a document issued,
 a meeting held, a hand-off to another team), keeping a document's producer with its consumer, never
-through a rework loop, with any-order sets boxed as their own sub-process (`ordering: any`), and
+through a rework loop, with any-order sets boxed as their own sub-process (`ordering: any`; a chain
+of real order inside one is nested as a small sub-process within it, and a box drawn inline on its
+parent's flow needs no folder or Overview), and
 roles only as a tie-breaker. Then check the result: one entry and one exit per sequential
 sub-process, more connections inside it than across its edge, no loop spanning two sub-processes.
 
