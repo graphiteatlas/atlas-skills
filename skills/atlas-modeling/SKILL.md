@@ -180,6 +180,22 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
   the Steering Committee, not "Steering Committee Project Approval".
 - **A Decision names the check, as a verb or a question:** "Check UAT Result", "Check Cost Against
   Initial Estimate", not "UAT Pass". The outcomes live on the `followed_by_if` branches.
+- **Every `followed_by_if` carries a `displayName`**, and that is what the canvas draws on the arrow.
+  Write it as "If <short condition>", or **"Always"** for an inclusive branch that always happens.
+  The `condition` property still states the rule in full; `displayName` is the half a reader sees.
+  A Decision whose outcomes are unlabelled arrows is a diagram that asks a question and shows no
+  answers, and the condition being populated does not fix it, because nothing renders it.
+  `displayName` is a **native field on the Path, not a property**, so it is set and read separately
+  from `condition` and does not appear in a properties blob. Nigel, 2026-10-08: this holds throughout,
+  for every conditional branch.
+
+```
+✗  Check Open Items ─followed_by_if→ Collect Closeout Docs   displayName: (none)
+     condition: "open items cleared"                         (true, and invisible on the canvas)
+✓  Check Open Items ─followed_by_if→ Collect Closeout Docs   displayName: "If cleared"
+     condition: "All open items items signed off by the owner's representative"
+```
+
 - **Keep the source's label as an alias** when it is what people say ("QC Pass", "Business Impact
   Review"), so search finds it and a citation quoting the source still reads naturally.
 - A diagram box label is usually the noun form. Transcribing it verbatim is where this goes wrong
