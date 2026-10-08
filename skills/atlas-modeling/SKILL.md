@@ -114,6 +114,22 @@ Check existing definitions for synonyms. Show the proposed convention for approv
 it as an established field. Record an approved definition once in the appropriate shared or
 account-specific modeling rules; do not silently extend the global ontology for one account.
 
+**Approved conventions** (recorded here per the rule above, not added to the global ontology):
+
+| | |
+|---|---|
+| **name** | `fields` |
+| **applies to** | `needs_input` Paths; optionally `creates_output` |
+| **value** | list of strings, the facts the step reads from that document |
+| **cardinality** | one `needs_input` per source document, each listing only its own fields |
+| **consumer** | agent and automation design (which document supplies which field), and the inference register |
+| **example** | `needs_input → Signed Order Form`, `fields: [legal entity name, billing terms]` |
+
+It passes the test above because a concrete consumer reads it: an automation cannot do a data-entry
+step until it knows which document each field comes from. It is not a checklist given the appearance
+of structure. Distinct from `columns`, which is a `Data Table`'s schema. Worked example and
+anti-patterns: `references/fields-on-inputs`.
+
 Illustrative examples:
 
 ```
@@ -276,6 +292,21 @@ the system on the artifact, and the step reaches it through what it creates or n
 ✓  Monitor Claims Inbox ─uses_resource→ Email                  (the step IS watching a mailbox,
                                                                so the tool belongs to the step)
 ```
+
+A step that reads specific facts out of a document puts them on the `needs_input` Path, one Path
+per source document:
+
+```
+✗  Enter Project Details ─needs_input→ Signed Order Form           (reads it, but takes what from it?)
+✗  Enter Project Details ─needs_input→ Signed Order Form
+     fields: [sales manager, estimator, PM]                    (PM is in the email, not the sheet:
+                                                               the union asserts something false)
+✓  Enter Project Details ─needs_input→ Signed Order Form   fields: [sales manager, estimator]
+✓  Enter Project Details ─needs_input→ Assignment Email fields: [assigned PM]
+```
+
+"Which document does this field come from" is the question an automation answers before it can do
+the step at all. Reference: `references/fields-on-inputs`.
 
 How a thing moves is a relationship, not a property. `channel:` on a point restates an edge
 that should exist, and then the two desync. The same holds for "lives in a shared folder":
