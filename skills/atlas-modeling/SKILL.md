@@ -88,78 +88,15 @@ not how it renders.
 Allowed in descriptions: facts with no structural home in the ontology (e.g. "primary regulator" where
 no regulates Path type exists), ILLUSTRATIVE/placeholder flags, and operational ATTACH notes.
 
-### Property governance: reuse definitions, not arbitrary keys
+### Property governance
 
-**Do not invent a property to give explanatory prose the appearance of structure.**
-`review_considerations`, `review_topics`, and `review_checks` are not three useful conventions
-merely because the API accepts them. Structure over prose means modeling relationships as Paths;
-it does not mean turning every sentence or checklist into a new field.
+Do not invent a property to give explanatory prose the appearance of structure. A
+relationship belongs in a Path, a fact about the point belongs in its description, and a
+defined property is for a value some query, rule or automation reads consistently.
 
-Choose the representation by purpose:
-
-- **Typed Paths:** performers, inputs, outputs, systems, membership, and dependencies. Do not
-  hide these in descriptions or custom properties.
-- **Description:** concise factual scope and explanatory review criteria belonging to the Point.
-  Do not duplicate facts already represented by Paths or defined properties.
-- **Defined properties:** values that a concrete query, validation rule, comparison, or automation
-  needs to consume consistently. Reuse the ontology or an explicitly approved modeling convention;
-  an arbitrary existing key is not proof that it is a standard.
-- **Reference material:** long checklists, instructions, diagrams, and illustrative cases. Preserve
-  them in an appropriately linked Artifact or uploaded Document, following section 2b. Distinct
-  actions with their own performers, inputs, or outputs still deserve Steps, not a buried checklist.
-
-Before proposing a new property, state its **name, meaning, applicable Point/Path types, value
-type and cardinality, allowed values or units where relevant, example, and intended consumer**.
-Check existing definitions for synonyms. Show the proposed convention for approval before using
-it as an established field. Record an approved definition once in the appropriate shared or
-account-specific modeling rules; do not silently extend the global ontology for one account.
-
-**Approved conventions** (recorded here per the rule above, not added to the global ontology):
-
-| | |
-|---|---|
-| **name** | `fields` |
-| **applies to** | `needs_input` Paths; optionally `creates_output` |
-| **value** | list of strings, the facts the step reads from that document |
-| **cardinality** | one `needs_input` per source document, each listing only its own fields |
-| **consumer** | agent and automation design (which document supplies which field), and the inference register |
-| **example** | `needs_input → Signed Order Form`, `fields: [legal entity name, billing terms]` |
-
-It passes the test above because a concrete consumer reads it: an automation cannot do a data-entry
-step until it knows which document each field comes from. It is not a checklist given the appearance
-of structure. Distinct from `columns`, which is a `Data Table`'s schema. Worked example and
-anti-patterns: `references/fields-on-inputs`.
-
-Illustrative examples:
-
-```
-✗ Review Request Scoring Sheet
-    review_considerations: [score, current workload, team assignment]
-✓ description: "Reviews the request score and current workload to inform team assignment."
-  Keep the performer, sheet input, and subsequent assignment as typed Paths.
-
-✗ Pre-Construction Meeting
-    agenda_topics: [safety, access, payment, schedule, permits, ...]
-  (a one-off field no consumer has agreed to read)
-✓ A concise description of the meeting's scope; the detailed agenda stays in its reference.
-  If agenda items must drive a checklist application, propose a defined schema first.
-
-✗ Review Construction Sequence
-    example_scope: "These diagrams are examples, not mandatory steps."
-✓ Put that interpretation in the proposal/reference caption, not a new business-data field.
-
-✓ Artifact ─uses_resource {usage_role: "storage"}→ Document Store
-  When usage_role is an approved convention, it serves a real consumer: distinguishing
-  storage from authoring or delivery. Do not replace that distinction with free-form prose.
-```
-
-**Migration is separate from the rule.** Do not delete existing custom properties or move their
-values automatically. Inspect consumers and evidence, preserve information, and propose exact
-before/after changes. A missing value stays missing; do not populate a field just to complete a table.
-
-Deeper examples: `references/name-by-function.md`, `references/structure-over-prose.md`,
-`references/instance-nodes.md` (actions are per-flow instances; entities are shared singletons — never
-wire one action Point into two flows).
+Before proposing a new property, state its name, meaning, applicable types, value type
+and cardinality, an example, and what consumes it. Approved conventions, including
+`fields` on `needs_input`: `references/property-governance`.
 
 ### An action is a verb and an object
 
@@ -201,59 +138,14 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
 - A diagram box label is usually the noun form. Transcribing it verbatim is where this goes wrong
   most often: the shape told the reader it was an action, and the name alone does not.
 
-### 1a. Abbreviations: full words in the name, short form in `aliases`
+### 1a. Abbreviations
 
-**The name carries the words a stranger can read. The short form goes in `aliases`.**
+Name a point with the words a stranger can read; put the short form in `aliases`, so
+search finds it either way. "Field Operations Support", aliased "FO Support", not the
+reverse. An abbreviation in the name costs every future reader a lookup.
 
-```
-✗  "FO Support"                       (reader outside the company cannot expand it)
-✓  "Field Operations Support"   properties: aliases: ["FO Support"]
-
-✗  "CM Daily Reports"
-✓  "Construction Management Daily Reports"   aliases: ["CM Daily Reports"]
-```
-
-This is the same principle as name-by-function, applied to legibility. An SOP or process book is
-read by people who were not in the room, including new starters, auditors and the customer's own
-other departments. An unexpanded abbreviation makes them guess. The alias keeps the short form
-searchable, so the people who do use it lose nothing.
-
-**The exception: when the letters ARE the name.** `Director EHS`, `RFI`, `NTP`, `PCO`. If the room
-says the letters and nobody says the expansion aloud, the letters are the name. Test: ask what the
-expansion is. If people hesitate, it is a name, not an abbreviation.
-
-**`aliases` holds alternate names for the SAME thing.** Four kinds legitimately belong there:
-abbreviation (`PM`), spoken synonym (`post-mortem` for the closeout meeting), prior name
-(`Change Order Spreadsheet` / `Change Order Log`), and informal reference (`the field`).
-
-Three things do NOT belong there, and all three were found in a real production atlas:
-
-```
-✗  aliases: "Jane Dow"             on Person "Jane Doe"         (a MISSPELLING, not an alias.
-                                                                 Fix the source, do not enshrine it)
-✗  aliases: "the team's request log" on "Request Log"           (one person's INSTANCE of the thing.
-                                                                 If it differs, it is another Point)
-✗  aliases: "Build Project in <vendor tool>" on Process "Project Setup"
-                                                                (a DIFFERENT CONCEPT, and it bakes a
-                                                                 vendor in through the back door)
-```
-
-The test: **would a reader accept the alias as a name for this Point, out loud, in a sentence?**
-If not, it is not an alias.
-
-**Two mechanical traps.**
-
-`aliases` is **not declared in the ontology's property list**, though it is used widely and the
-Navigator prompt documents it. So nothing validates it. Write it carefully; you will get no error.
-
-`aliases` is **array-valued, and `update_point` merges at the property level, not inside the
-value.** Writing `aliases: ["FO"]` onto a Point that already holds `["FO", "the field"]` REPLACES
-the array and silently loses the second entry. Always read the existing value first and write the
-union. This is the single easiest way to destroy data in an otherwise safe property merge.
-
-**Store one shape.** The same atlas held both `aliases: ["FO", "the field"]` and `aliases: PO`, a
-bare string. Always write a list, even for one entry, so every consumer can iterate without
-type-checking.
+Worked examples, including when a customer's own abbreviation is the better name:
+`references/abbreviations-and-aliases`.
 
 ### 1b. Suffixes are a disambiguator, not a house style
 
@@ -354,177 +246,26 @@ actor produces each component; components produced by one actor in one step stay
 parent Artifact's description. Apply the line consistently, or the graph says "these components are
 nodes" and "those are text" with no principle behind it.
 
-### 2a. A view is a unit of review, so decompose the process, not the picture
+### 2a. A view is a unit of review
 
-**A flow view holds one subgraph a person can check in one look.** When a process view grows past
-that, the view is the symptom; the disease is a process that was never decomposed. Fix it upstream:
-promote the phases to child Processes, wire `parent -has_step-> child`, and give each child its own
-view in a folder named for the parent. Splitting the picture alone leaves a 30-step process pretending
-to be atomic, and every later query inherits that.
+A flow view holds one subgraph a person can check in one look. When a process view
+grows past that, the view is the symptom and the undecomposed process is the disease.
+Fix it upstream: promote the phases to child Processes, wire `parent -has_step-> child`,
+and give each child its own view in a folder named for the parent. Splitting the picture
+alone leaves a thirty-step process pretending to be atomic, and every later query
+inherits that.
 
-```
-X  Process "HUD Liquidation Claims" -has_step-> 30 Steps, all in one view
-   (nobody reviews this; they scroll it, agree, and miss the branch that is wrong)
+Where to cut, the spine view, entry and exit boxes, and the checks:
+`references/view-decomposition` and `references/large-process-decomposition`.
 
-V  Process "HUD Liquidation Claims" -has_step-> "Curtailment Review" (Process) -has_step-> 5 Steps
-   one view per child Process, nested in a "HUD Liquidation Claims" folder
-```
+### 2b. Reference documents
 
-**Do not make this a point count.** An inventory view (Artifacts, Systems, Org) is a list, and a list
-stays readable at thirty. A *sequence* stops being reviewable at about a dozen, because the reader has
-to hold the order in their head while they pan. The rule applies to flow views only. A rule that counts
-points flags the wrong views, and people learn to ignore it.
+A `Document` is a file that was uploaded, so a Document point with no bytes behind it
+contradicts its own type. Which type a referenced document gets depends on whether the
+file is in the atlas: hold the file and it is a `Document`; name an authority you only
+link to and it is an `Artifact` carrying a `url`.
 
-The test is behavioural first: **can a reviewer read this view and say "yes, that is how it works"
-without panning to keep the sequence straight?** If they pan, it is two views. Behind it sit
-published limits, and they are a gate, not a suggestion:
-
-| | Pass | Warn | Must decompose |
-|---|---|---|---|
-| Direct steps in a leaf Process | 4 to 12 | 13 to 15 | 16 or more |
-| Phases in a parent Process | 3 to 9 | 10 to 15 | 16 or more |
-| Own actions on a flow view | up to 12 | 13 to 15 | 16 or more |
-| Cards on a flow view | up to 30 | 31 to 49 | 50 or more |
-
-**Where to cut, in order:** at breakpoints (a milestone the business recognises: a document issued,
-a meeting held, a hand-off to another team), keeping a document's producer with its consumer, never
-through a rework loop, with any-order sets boxed as their own sub-process (`ordering: any`; a chain
-of real order inside one is nested as a small sub-process within it, and a box drawn inline on its
-parent's flow needs no folder or Overview), and
-roles only as a tie-breaker. Then check the result: one entry and one exit per sequential
-sub-process, more connections inside it than across its edge, no loop spanning two sub-processes.
-
-**The layout:** a folder named for the process holds `<Process> Overview` first (the spine: the
-sub-processes in sequence, an any-order set as one box), then one view per sub-process in flow
-order, then optionally `Entire <Process>`, the whole thing on one canvas, exempt from the size limits
-but still one connected flow. Those two names are allowed past the one-or-two-word rule. The long
-form, the checks and the sources are in `references/large-process-decomposition.md`.
-
-**Count actions, not points.** A view also holds the Process node, the performers and the artifacts,
-so twelve actions is comfortably past twenty points. Briefing someone with a *point* budget instead
-of an *action* budget forces over-splitting: on one custodial-accounting build a "4 to 9 points"
-brief produced twenty-five child processes with a median of four actions, one of them holding a
-single step. A Process that exists only to justify a view is the failure of this rule, not its application.
-
-**The floor matters as much as the ceiling.** Below about three actions, ask whether the business
-would name this separately. If the name is one you coined, merge it back up.
-
-**The limit that keeps this a judgment call: never split into a subprocess the business has no name
-for.** If nobody in the room calls those six steps anything, "Claim Preparation Phase" is vocabulary
-you invented, and every reader has to translate it back to what they actually say. A slightly
-oversized view beats a fictional subprocess. Decompose along the seams the business already names
-(the handoff, the system change, the role change, the phase they say out loud); if there is no seam,
-leave it whole and say so.
-
-**One connected flow per view.** A flow view shows one **connected component**: every action in it is
-reachable from every other along the sequence paths (`followed_by`, `followed_by_if`), ignoring
-direction. Two or more chains sitting side by side with no path between them are **disconnected
-components**, or **fragments**; a single unlinked action is an **isolated node**. In process-modeling
-terms the view is not **well-formed**: there is no single path from its start to its end. (Process
-theory calls the stronger version **soundness**: every step lies on some path from start to end.)
-
-```
-X  View "Definition and Planning": [Line of Business Engagement -> Vendor Engagement]
-   [Within 20%? -> Present to Steering Committee -> SteerCo Approval -> Cancel Project]
-   [Client Engagement]   [Provide Documentation...]      <- four fragments, no path between them
-
-V  one entry, one or more exits, every action on a path between them; parallel work branches
-   from a common step and rejoins (or ends) explicitly
-```
-
-A fragment means one of three things, and each has a different fix:
-
-- **Missing sequence.** The steps do follow each other and nobody recorded it. Ask, then wire it.
-- **Parallel work.** The chains run at the same time. Branch them from the step that starts them and
-  join them where they meet, or, if their order is genuinely unknown, show them in a named container
-  with no implied arrows (see atlas-process-book).
-- **Two processes in one view.** The chains belong to different processes or phases. Split the view
-  along that seam (2a). Show the other process as an entry or exit box joined by an arrow, or link
-  across with a hyperlink to its view; never a floating, unjoined box.
-
-Never "fix" a fragment by inventing a `followed_by` nobody stated. An honest disconnected view with a
-question attached beats a connected view that is wrong.
-
-**A Process on its own view is a container, never a hub.** Atlas draws a Process on a view as a
-container around its steps, so the sub-process view holds its Process and the steps sit inside the
-box. If containers are switched off for a view, every step draws a `has_step` line back to the
-Process instead and the flow disappears under the spokes: then leave the Process off its own view.
-A Process card that holds nothing on the canvas is an **entry or exit box**: a DIFFERENT process (the
-previous or next stage, an any-order box the flow passes through) drawn as one box, joined by an
-arrow from or to this view's process or one of its steps, and never shown alongside its own steps.
-The step-level form, the neighbouring step itself, is an entry or exit card; the box is the default.
-Full rule in references/large-process-decomposition.md.
-
-```
-X  containers off: view "Initiation" holds Process "Initiation" + its 12 steps   (12 spokes)
-V  view "Initiation" holds Process "Initiation" drawn as the box around its 12 steps,
-   plus Process "Charter and Change Council" as the exit box, joined by an arrow from the last step
-```
-
-### 2b. Reference documents: the point type follows whether you hold the file
-
-**A `Document` is a file that was uploaded.** The ontology defines it as created for every
-uploaded file, so a Document point with no bytes behind it contradicts its own type. Which
-point type a referenced document gets therefore depends on whether it is in the atlas:
-
-| The document is | Point | Path from the thing that references it |
-|---|---|---|
-| the **source** the model was built from | `Document` (created by the upload) | `extracted_from`, carrying the citations |
-| an **authority you uploaded** | `Document` | `has_attachment` (declared `* -> Document`) |
-| an **authority you only link to** | `Artifact`, tag `knowledge_doc`, `url` property | `needs_input`, from the step that opens it |
-
-**Anti-pattern: confusing modeling evidence with an operational resource.** A guide, transcript,
-sticky-note photograph, or SOP that the agent reads to construct the graph is not automatically
-something the business uses to perform the work. Its existence, title, or instructional wording
-does not establish a `needs_input` or `uses_resource` Path. The linked-authority pattern above
-applies only when its operational use is evidenced, not as a fallback for an unuploaded source.
-
-```
-Source statement in a startup guide: "Check the construction sequence for access conflicts."
-
-✗ Create Startup Guide [Artifact] merely because it supplied that statement, then:
-  Review Construction Sequence [Review] ─uses_resource→ Startup Guide [Artifact]
-  (asserts use of the guide that the source never established)
-
-✓ Upload the source, then record provenance:
-  Review Construction Sequence [Review] ─extracted_from→ Startup Guide [Document]
-  Attach a supporting quotation only after ingestion and verification.
-
-Separate statement: "Open the startup checklist and complete each required item."
-✓ This DOES evidence an operational input. Model that use with the appropriate
-  reference-document pattern above, separately from provenance.
-```
-
-If the source is not uploaded, retain its URL, local reference and supporting passage in the
-proposal/evidence record. Do not fabricate a file-backed Document or create an operational
-Artifact just to give the source a graph home. Selected diagrams may be attached as reference
-Documents without implying that every performer consults them or that their examples describe
-every job. One source can support both provenance and operational use, but each requires its own
-evidence; do not create duplicate representations solely to express the two roles.
-
-**Test:** *Does the evidence say the performer uses this material, or only that the modeler did?*
-
-**Upload when someone needs to read it from inside the atlas; link when they do not.**
-Attaching costs ingestion, storage and a point, and pays in retrieval and citation. For a
-mapping guide a step follows field by field, upload. For a 400-page handbook nobody opens per
-transaction, link.
-
-**A citation list at the back of an SOP is a bibliography, not a relation.** Where a source
-lists governing guidance without mapping any of it to a step, put the list in the governed
-Process's description and model nothing: every citation would otherwise attach to the parent
-and "what must we review if this changes" would answer "all of it", which the description
-already says. Where the rules ARE the subject (a compliance matrix, a control register), model
-each obligation as a **Step carrying its citation and deadline as properties**.
-
-Prior art, if you need to argue it: Dublin Core's `dcterms:conformsTo` relates a **resource to
-a standard**, document to document, not a process to a rule. PROV-O's `wasDerivedFrom` is our
-`extracted_from`. FRBR's work/expression/manifestation split is why a blank form and a
-completed form are one Artifact, not two.
-
-Deeper examples: `references/dependencies-on-steps.md`, `references/service-as-system.md`,
-`references/artifact-vs-system.md` (EDI X12, NACHA files, 1099/K-1 forms are Artifacts, not Systems),
-`references/database-vs-table.md` (the store is a Database, the app is a System; tables attach via
-`has_table`, columns are properties, join conditions live on `joins_to` edge descriptions).
+The full table, and how each is attached: `references/reference-documents`.
 
 ## 3. Type by meaning, membership explicit
 
@@ -649,7 +390,7 @@ Read a file in `references/` only when you need the full worked example for a sp
 
 ## Structuring a new atlas
 
-**NEVER create folders before checking what exists.** A new atlas
+**Check what exists before creating folders.** A new atlas
 auto-provisions the six default folders (People, Entities, Business Model, Process, Systems, Metrics),
 possibly with a short allocation delay after `create_atlas`. Creating your own "People"/"Process"/etc.
 produces a DUPLICATE set alongside the empty defaults. Rule: after `create_atlas` and before any
