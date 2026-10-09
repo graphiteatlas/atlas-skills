@@ -63,9 +63,8 @@ create_path(atlas_id, name: 'extracted_from', source: <point>, target: <document
 point is an honest gap a reviewer can act on. A stretched quote is worse than a
 gap, because it looks like evidence.
 
-**Attach before you cite, and let indexing finish.** A document that has not
-finished indexing has nothing to verify against. See *Rough edges* for how that
-currently fails.
+**Attach before you cite.** The quote is checked against the document, so the
+document has to be there first.
 
 ## 2. Choose the unit of work
 
@@ -324,12 +323,6 @@ something that already exists, `update_point` it: extend the description, add th
 alias, correct the type. The citations already attached stay attached, which is the
 whole reason to edit rather than replace.
 
-**Supersede; do not delete.** When something is genuinely no longer true, set
-`model_status: superseded` rather than removing it. Deleting destroys the record of
-what was believed and the evidence for it, and in an atlas somebody reviewed that
-record is the point. A superseded point stays answerable to "what did we think in
-September, and what changed it".
-
 **Check `model_status` in both places.** It can appear as a field and inside the
 properties blob, and an older atlas may carry it only in the properties string: one
 has 166 paths retired that way. Check the field alone and you will treat every one
@@ -357,42 +350,6 @@ anyone relied on.
 plainly which points you are creating, which you are editing, and which you are
 superseding. "12 new, 4 edited, 2 superseded" is the sentence a reviewer needs; a
 list of 18 writes is not.
-
-## Rough edges, as of 2026-10-08
-
-**Everything above is how to work. This is what is awkward right now.** It is dated
-because it is meant to shrink: delete an entry when it stops being true, rather
-than carrying it forever. If something here contradicts what you observe, trust
-what you observe.
-
-**Not every file format yields text.** Atlas extracts from PDF, `.docx` and
-plain-text formats. A spreadsheet, a deck or a diagram file may upload without
-producing citable text, so the Document Point exists and has nothing in it. Convert
-before uploading where you can: a spreadsheet to CSV rather than PDF, so the
-structure stays citable; a diagram or a multi-sheet workbook to PDF. **From a chat
-client you cannot convert anything**, so say so before the upload and ask for a
-PDF, `.docx` or CSV instead.
-
-**Check extraction before citing, not after.** `list_files` reports each file's
-status and chunk count. A file is ready when the status is terminal **and** the
-chunk count is above zero: status alone goes terminal for a scan or an image with
-no text layer, so a document can be "done" and unreadable. If the chunk count stays
-at zero, stop and say the document has no text rather than citing it.
-
-**Citing before indexing finishes does not work**, and what happens depends on the
-version you are talking to: newer builds refuse the write outright, naming the
-document; older ones accepted the write and dropped the citations. Either way the
-answer is the same, wait and send it again, and section 5 is how you find out which
-happened.
-
-**Large batches have practical limits.** Resolving Points by name is capped, which
-is the main reason to write by id. Bulk deletes time out well before a long list
-finishes, so delete in small batches and read back rather than resending the same
-list after a timeout.
-
-**A `.docx` exported from a chat or meeting tool is often mostly images**, one
-avatar per utterance, which can make the file too large to ingest while containing
-every word you want. Export to PDF instead; the export deduplicates them.
 
 ## Reading a document that is already in the atlas
 
