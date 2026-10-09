@@ -57,6 +57,27 @@ a good one.
 leave it whole and record why. A slightly oversized process beats a fictional sub-process every
 reader has to translate back.
 
+## Where a new sub-process may sit
+
+**A sub-process sits between two siblings at the same altitude**, entered where the one
+before it ends and leaving into the one after. It is a segment of the spine, not a
+detour from the middle of one.
+
+So when the thing that triggers it sits mid-flow, inside a decision partway through a
+sibling, you have two honest options and one wrong one.
+
+- **Move the decision to the end of the sibling**, so the new sub-process starts where
+  that one finishes. This reorders the customer's map, so show them rather than doing it
+  quietly.
+- **Keep the content inline as steps** in the process that already holds it. Not
+  everything that groups neatly deserves its own process.
+- **Do not enter a sub-process from the middle of another and return into it.** It reads
+  fine on a canvas and fails single entry and single exit, and the node tree then says
+  the child is part of the parent's middle rather than a stage of the whole.
+
+The test: name the sibling that ends where this one begins. If you cannot, it is not a
+sub-process yet.
+
 ## The layout
 
 ```

@@ -334,12 +334,26 @@ semantic_search(atlas_id, query)      the same thing said differently
 find_similar_points(atlas_id, ...)    near-duplicates you would not think to search
 ```
 
+**Match by what a point does, not only by what it is called.** A search finds nothing
+when the names share no words, and that is exactly the case for outcomes: "Reject
+Request" and "Close Request as Unavailable" are the same exit under two names. Before
+adding a step that ends, denies, closes, approves or routes something, list the
+process's existing outcomes and exits and reuse the one that does that job. This is the
+match a name search cannot make for you.
+
 Search the **aliases** too, not just names. A process recorded as "Supplier
 Invoice Reconciliation" with the alias "Invoice Recon" will not be found by the
 second phrase unless you look for it. Where you find a match, use it and keep its id. A
 duplicate point is worse than a missing one: it splits the citations, the views and
 the history of one real thing into two half-records, and nothing in the product
 flags it.
+
+**Read the description of every point your source touches**, not just its name. A point
+existing is not the same as a point being current. Work through each claim the source
+makes about it and say which ones it contradicts or refines: a rule stated as "active,
+with no default in the last three months" replaces one recorded as "not inactive in the
+last 90 days", and nothing about the point's name reveals that. The claims you do not
+check stay in the model as facts.
 
 **Change the point rather than adding a second one.** When a new source refines
 something that already exists, `update_point` it: extend the description, add the
@@ -364,6 +378,18 @@ ask. A customer can settle it in one sentence, and the alternative is an atlas t
 disagrees with the document it cites. The same holds when your source is newer: more
 recent is not automatically more right, and a transcript of someone describing the
 work usually beats a procedure document describing the intent.
+
+**A source can contradict itself, and that is a finding too.** A speaker explains a rule
+early and restates it differently later, and the second version is not automatically the
+correction. Quote both, with their timestamps or page numbers, and ask. Picking the
+reading that fits your model is the failure here, because it is invisible: one quote
+goes in, it looks sourced, and the other reading is gone.
+
+```
+Said at 53:32  "the client is responsible for the representative's fees"
+Said at 55:18  "we are responsible for those fees"
+-> one question, both quotes, not a choice made quietly
+```
 
 **Retire paths the same way.** A sequence that changed is a superseded
 `followed_by` plus a new one, not an edited edge, when the old order was something
