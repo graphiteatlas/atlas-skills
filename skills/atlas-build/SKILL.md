@@ -148,21 +148,22 @@ Counts first, because that is the line a reviewer actually needs. Every new fact
 carries its verbatim quote and page. Inferences in their own block. Questions last.
 
 ```
-PROPOSAL - Vendor Onboarding, from Referral SOP v4.pdf
+PROPOSAL - Vendor Onboarding, from Supplier Setup SOP v4.pdf
 12 new · 4 edited · 2 superseded · 3 inferred · 2 questions
 
 NEW
-  Step  Order Title Search      "The supplier orders a title search within
-                                 5 days of referral."                    p.7
-  Step  Confirm Occupancy       "Occupancy must be confirmed before..."  p.7
+  Step  Run Credit Check        "A credit check is ordered within 5 days
+                                 of the signed agreement."               p.7
+  Step  Verify Bank Details     "Bank details must be verified before
+                                 the first payment run."                 p.7
 EDITED
-  Step  Refer to Counsel        + alias "Attorney Referral"              p.6
+  Step  Assign Buyer            + alias "Category Owner"                 p.6
 SUPERSEDED
-  Step  Manual Referral Log     replaced by Order Title Search           p.7
+  Step  Manual Supplier Log     replaced by Run Credit Check             p.7
 INFERRED (no source states these)
-  Order Title Search -> Confirm Occupancy    both listed under day 5
+  Run Credit Check -> Verify Bank Details    both listed under day 5
 QUESTIONS
-  1. Does Confirm Occupancy block the title order, or run alongside it?
+  1. Does Verify Bank Details block the credit check, or run alongside it?
 ```
 
 **If it is too long to read in a chat message, the unit of work is too big.** That
@@ -311,9 +312,9 @@ semantic_search(atlas_id, query)      the same thing said differently
 find_similar_points(atlas_id, ...)    near-duplicates you would not think to search
 ```
 
-Search the **aliases** too, not just names. A process recorded as "Supplier Invoice
-Reconciliation" with the alias "Advance Recon" will not be found by the second
-phrase unless you look for it. Where you find a match, use it and keep its id. A
+Search the **aliases** too, not just names. A process recorded as "Supplier
+Invoice Reconciliation" with the alias "Invoice Recon" will not be found by the
+second phrase unless you look for it. Where you find a match, use it and keep its id. A
 duplicate point is worse than a missing one: it splits the citations, the views and
 the history of one real thing into two half-records, and nothing in the product
 flags it.

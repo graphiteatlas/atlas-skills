@@ -76,7 +76,7 @@ another property of the Point, so it must contain only facts UNIQUE to that Poin
 X  Group "Steering Committee", description: "A lane in the PMO Flow."     (describes the drawing)
 X  Process "Charter and Change Council", description: "Definition and Planning to Council."
                                                                   (the page title, not what happens)
-X  atlas description: "Built from the intake workflow deck."             (provenance, not the business)
+X  atlas description: "Built from the intake workflow deck."           (provenance, not the business)
 V  "Committee that decides whether a project goes ahead on its cost-benefit case."
 V  "Sets up the approved project with a charter and a complexity assessment, and gets the
     go-ahead to define requirements."
@@ -134,8 +134,8 @@ Illustrative examples:
 
 ```
 ✗ Review Request Scoring Sheet
-    review_considerations: [complexity rating, current workload, team assignment]
-✓ description: "Reviews project complexity and current workload to inform team assignment."
+    review_considerations: [score, current workload, team assignment]
+✓ description: "Reviews the request score and current workload to inform team assignment."
   Keep the performer, sheet input, and subsequent assignment as typed Paths.
 
 ✗ Pre-Construction Meeting
@@ -186,14 +186,14 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
   A Decision whose outcomes are unlabelled arrows is a diagram that asks a question and shows no
   answers, and the condition being populated does not fix it, because nothing renders it.
   `displayName` is a **native field on the Path, not a property**, so it is set and read separately
-  from `condition` and does not appear in a properties blob. Nigel, 2026-10-08: this holds throughout,
+  from `condition` and does not appear in a properties blob. This holds throughout,
   for every conditional branch.
 
 ```
-✗  Check Open Items ─followed_by_if→ Collect Closeout Docs   displayName: (none)
-     condition: "open items cleared"                         (true, and invisible on the canvas)
-✓  Check Open Items ─followed_by_if→ Collect Closeout Docs   displayName: "If cleared"
-     condition: "All open items items signed off by the owner's representative"
+✗  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: (none)
+     condition: "all items cleared"                          (true, and invisible on the canvas)
+✓  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: "If cleared"
+     condition: "Every open item signed off by the account owner"
 ```
 
 - **Keep the source's label as an alias** when it is what people say ("QC Pass", "Business Impact
@@ -231,9 +231,9 @@ Three things do NOT belong there, and all three were found in a real production 
 ```
 ✗  aliases: "Jane Dow"             on Person "Jane Doe"         (a MISSPELLING, not an alias.
                                                                  Fix the source, do not enshrine it)
-✗  aliases: "Jane's request log" on "Request Log"   (one person's INSTANCE of the thing.
+✗  aliases: "the team's request log" on "Request Log"           (one person's INSTANCE of the thing.
                                                                  If it differs, it is another Point)
-✗  aliases: "Build Project in WorkSuite" on Process "Project Setup"
+✗  aliases: "Build Project in <vendor tool>" on Process "Project Setup"
                                                                 (a DIFFERENT CONCEPT, and it bakes a
                                                                  vendor in through the back door)
 ```
@@ -295,15 +295,15 @@ A step that fills in a spreadsheet does not "use Excel"; the spreadsheet lives i
 the system on the artifact, and the step reaches it through what it creates or needs:
 
 ```
-✗  Complete Request Scoring Sheet ─uses_resource→ Excel     (inferred from the document)
+✗  Complete Request Scoring Sheet ─uses_resource→ Excel        (inferred from the document)
 ✓  Complete Request Scoring Sheet ─creates_output→ Request Scoring Sheet
-   Request Scoring Sheet ─uses_resource→ Excel               (the document lives there)
+   Request Scoring Sheet ─uses_resource→ Excel                  (the document lives there)
 
-✗  Send Request to Client ─uses_resource→ Microsoft Outlook  (a mail client hung on a step
+✗  Send Report to Client ─uses_resource→ Microsoft Outlook     (a mail client hung on a step
                                                                that merely sends; vendor in the name)
-✗  Send Request to Client  properties: channel: email        (a fact with a structural home,
+✗  Send Report to Client  properties: channel: email           (a fact with a structural home,
                                                                written as prose)
-✓  Request ─uses_resource→ Email (System) ─provided_by→ Microsoft
+✓  Report ─uses_resource→ Email (System) ─provided_by→ Microsoft
    (the document travels by email; the step reaches Email through what it sends)
 ✓  Monitor Claims Inbox ─uses_resource→ Email                  (the step IS watching a mailbox,
                                                                so the tool belongs to the step)
@@ -313,12 +313,12 @@ A step that reads specific facts out of a document puts them on the `needs_input
 per source document:
 
 ```
-✗  Enter Project Details ─needs_input→ Signed Order Form           (reads it, but takes what from it?)
-✗  Enter Project Details ─needs_input→ Signed Order Form
-     fields: [sales manager, estimator, PM]                    (PM is in the email, not the sheet:
-                                                               the union asserts something false)
-✓  Enter Project Details ─needs_input→ Signed Order Form   fields: [sales manager, estimator]
-✓  Enter Project Details ─needs_input→ Assignment Email fields: [assigned PM]
+✗  Enter Client Details ─needs_input→ Signed Order Form        (reads it, but takes what from it?)
+✗  Enter Client Details ─needs_input→ Signed Order Form
+     fields: [legal entity, billing terms, account manager]    (the manager is in the email, not the
+                                                               form: the union asserts something false)
+✓  Enter Client Details ─needs_input→ Signed Order Form  fields: [legal entity, billing terms]
+✓  Enter Client Details ─needs_input→ Handoff Email      fields: [assigned account manager]
 ```
 
 "Which document does this field come from" is the question an automation answers before it can do
@@ -334,7 +334,7 @@ then the target is the **module**, not the suite, reached `provided_by` its Vend
 ```
 ✗  Review and Approve Request ─uses_resource→ WorkSuite        (a suite of thirty tools)
 ✓  Review and Approve Request ─uses_resource→ WorkSuite Approvals ─uses_resource→ WorkSuite
-   WorkSuite Approvals ─provided_by→ WorkSuite                     (display_name: module)
+   WorkSuite Approvals ─provided_by→ WorkSuite                  (display_name: module)
 ```
 
 Test: *could the step be done with the document open in a different application?* If yes, the

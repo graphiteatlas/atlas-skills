@@ -41,11 +41,11 @@ still a 40-step Process, and every rollup, document and query inherits it.
      drawn as a container in the box's own view. The box stays one box on its parent's flow: the
      nesting is invisible from outside, which is the point. A nested chain is exempt from the
      four-step minimum. The alternatives, pulling the chain out as a sibling process or dropping
-     `ordering: any` from the box, were considered and turned down (Nigel, 2026-10-05).
+     `ordering: any` from the box, were considered and turned down (decided 2026-10-05).
    - **An inline box needs no folder and no Overview,** a deliberate exception to the tree rule. A
      box drawn on its parent's own view and entered or left on that flow is part of the parent's
      flow, not a phase, so it does not by itself give the parent a folder. A parent needs a folder
-     once it has a sub-process that is not an inline box (Nigel, 2026-10-05).
+     once it has a sub-process that is not an inline box (decided 2026-10-05).
 5. **Use roles only to break a tie.** A change of team supports a breakpoint; it never forces one.
    A role-based cut alone produces swimlanes, not phases.
 
@@ -86,7 +86,7 @@ Process (folder)
     process, and the two processes are not linked), draw the arrow from the handing-off step to
     the other process's box. It records the hand-off at the level it happens; a link between the
     processes would assert one the business does not have. An entry hand-off is the mirror: the
-    previous process's box leads into the step that receives it (Nigel, 2026-10-05).
+    previous process's box leads into the step that receives it (decided 2026-10-05).
   - **Never keep a step card beside its box.** A box holding one of its own steps has become a
     second container, and a view could then gather another process's work one card at a time. If
     a view seems to need one, the graph is missing a structural fact: raise it, do not edit the view.
