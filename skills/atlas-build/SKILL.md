@@ -143,12 +143,31 @@ specific to one chat client and this has to work in any of them, and a proposal
 exists to be corrected in the moment, which a separate surface the reader has to
 open works against.
 
-Counts first, because that is the line a reviewer actually needs. Every new fact
-carries its verbatim quote and page. Inferences in their own block. Questions last.
+Counts first, because that is the line a reviewer actually needs, and **say what
+you reused unchanged**: that is the number that catches a duplicate, because a
+build that reuses nothing is usually a build that re-created things the atlas
+already had.
+
+**Then say where it lands**, before the detail. A reviewer who can see the folders
+and views can tell you the model is going in the wrong place in one line, which is
+much cheaper than finding out after the write. Mark each one new or existing, and
+for an existing view say how many points you are adding to it. `atlas-language`
+has the default folder structure and the naming rules; the proposal is where you
+show which of them you chose.
+
+Every new fact then carries its verbatim quote and page. Inferences in their own
+block. Questions last.
 
 ```
 PROPOSAL - Vendor Onboarding, from Supplier Setup SOP v4.pdf
-12 new · 4 edited · 2 superseded · 3 inferred · 2 questions
+12 new · 6 reused unchanged · 4 edited · 1 superseded · 3 inferred · 2 questions
+
+STRUCTURE                                    (where it lands)
+  Process/                                   existing folder
+    Onboarding                               NEW view, 9 points
+    Supplier Setup                           existing view, +3 points
+  Systems/                                   existing folder
+    Systems                                  existing view, +1 point
 
 NEW
   Step  Run Credit Check        "A credit check is ordered within 5 days
@@ -168,6 +187,10 @@ QUESTIONS
 **If it is too long to read in a chat message, the unit of work is too big.** That
 is section 3's problem, not a reason to change the medium. A proposal nobody can
 read is the same failure as a model nobody checks.
+
+**A new folder is a bigger claim than a new view**, so call it out as its own line
+rather than letting it appear silently in a tree. Folders are the atlas's top-level
+organisation and a customer has opinions about them; views come and go.
 
 Keep the rendered, in-app document for the proposal screen. This is the chat
 version of the same thing, not a replacement for it.
@@ -348,7 +371,7 @@ anyone relied on.
 
 **Propose the whole change before writing any of it**, as in section 3, and say
 plainly which points you are creating, which you are editing, and which you are
-superseding. "12 new, 4 edited, 2 superseded" is the sentence a reviewer needs; a
+superseding. "12 new, 6 reused, 4 edited, 1 superseded" is the sentence a reviewer needs; a
 list of 18 writes is not.
 
 ## Reading a document that is already in the atlas
