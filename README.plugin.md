@@ -1,4 +1,4 @@
-# graphite-atlas plugin (v0.2.0)
+# graphite-atlas plugin
 
 The Atlas **modeling skills + MCP server**, bundled into one installable Claude Code plugin.
 The point: an MCP gives an agent *hands* (tools to read/write an atlas); this plugin also gives it
