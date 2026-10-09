@@ -267,6 +267,23 @@ link to and it is an `Artifact` carrying a `url`.
 
 The full table, and how each is attached: `references/reference-documents`.
 
+### A rule that governs a step is a Policy, not only a branch
+
+When a source states a rule the step must follow, model the rule as a `Policy` point that
+the step reads with `needs_input`. Add a branch only where the path through the process
+actually differs.
+
+```
+✗  Check Eligibility --followed_by_if--> ... one branch per jurisdiction
+     (fifteen branches that all rejoin, encoding the rules as flow)
+✓  Check Eligibility --needs_input--> "Eligibility Rules: <jurisdiction>" (Policy)
+     plus one branch where the process genuinely diverges
+```
+
+The rules are then readable, citable and editable in one place, and the flow stays the
+shape of the work. A branch per rule buries the rule in the topology, where changing it
+means redrawing the process.
+
 ## 3. Type by meaning, membership explicit
 
 **Use the Point type that matches the meaning, with the membership Path it requires.** A member Step
