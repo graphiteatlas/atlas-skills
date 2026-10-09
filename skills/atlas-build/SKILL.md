@@ -1,13 +1,13 @@
 ---
 name: atlas-build
-description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents, or a cache of dozens of them - rather than from a conversation, AND when adding new material to an atlas that already exists. Covers the whole arc: what Atlas can read and what has to be converted first, the attach-then-cite ordering that fails silently, choosing the unit of work, proposing the change in chat before writing it, labelling what you inferred, asking only the questions that change the model, writing it (including from a chat client with only the MCP tools), verifying by reading back rather than trusting a success response, and matching, editing and superseding rather than duplicating when the atlas already has points. Invoke alongside atlas-modeling, which decides HOW to model; this decides the order of operations and where the silent failures are.
+description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents, or a cache of dozens of them - rather than from a conversation, AND when adding new material to an atlas that already exists. Covers the order of operations: reading the sources and keeping the sentence each fact came from, choosing the unit of work, proposing the change in chat before writing it, labelling what you inferred, asking only the questions that change the model, writing it, verifying by reading it back, and matching, editing and superseding rather than duplicating when the atlas already has points. Invoke alongside atlas-modeling, which decides HOW to model; this decides in what order.
 ---
 
 # Atlas: build from documents
 
-`atlas-modeling` decides **how** to model. This decides **the order of operations**,
-and it exists because most of what goes wrong here goes wrong quietly: the write
-reports success and the result is not what you asked for.
+`atlas-modeling` decides **how** to model. This decides **the order of operations**:
+what to read, what unit to work in, what to show a person before writing, how to
+label what you inferred, and how to add to an atlas that already has content.
 
 *Terms: Atlas calls graph nodes **Points** and edges **Paths**. A citation lives on
 the Path, not the Point.*
@@ -24,83 +24,50 @@ get more control and no safety net: none of the review surface is there unless y
 build it. Everything below is written for this path. If you are on the first path
 and something here contradicts what the app does, the app is right.
 
-## 1. Prepare: what Atlas can actually read
+## 1. Read the sources yourself, then make them citable
 
-Atlas extracts text from **PDF, `.docx` and plain-text formats**. Anything else is
-where builds quietly lose most of their evidence.
+**Read the documents yourself. You are better at it than any extraction pipeline.**
+Model from what you read, and for each fact keep the sentence you took it from,
+verbatim, plus its page. That sentence is what makes the fact checkable later, and
+collecting it as you read costs nothing; reconstructing it afterwards is most of a
+day.
 
-As of 2026-09, an unsupported format **uploads successfully** and writes a warning
-string into the Document Point instead of the document's content. Nothing looks
-wrong until a citation matches the apology. This affects `.xlsx`, `.pptx`, `.doc`,
-`.xls`, `.ppt` and `.vsdx`, which between them are most of what people send.
-
-So before uploading anything that is not a PDF, a `.docx` or plain text:
-
-- **Convert it yourself.** A spreadsheet to CSV rather than PDF, so the structure
-  stays citable. A multi-sheet workbook to PDF if the sheets only make sense
-  visually. A diagram export to PDF.
-- **Convert it rather than asking for a re-export.** The person can usually oblige,
-  but their own export is often partial in ways nobody notices until the citations
-  come up short: a ten-page diagram workbook exported by hand covered two pages.
-- **Check the text survived**, not just that the file uploaded. See step 2.
-
-**In a chat client you cannot convert anything**, so the move is to say so before
-the upload rather than after. Name the file, say Atlas will store a warning string
-instead of its contents, and ask for a PDF, a `.docx` or a CSV. Uploading it anyway
-"to see" costs a Document Point whose body is an apology and citations that match
-it. If it is already uploaded, `list_files` showing `chunkCount` 0 is the proof,
-and the honest report is that the document is not readable rather than that it is
-thin.
-
-A `.docx` that is mostly images is its own trap. Exported chat and meeting
-transcripts often carry one avatar image per utterance, which makes the file large
-enough to fail ingestion while containing every word you want. Strip the media or
-export to PDF instead; the PDF export deduplicates the images.
-
-## 2. Ingest: attach first, wait for chunks, THEN cite
-
-**This is the single most common way this workflow fails, and it has no error
-message.**
-
-A citation is verified server-side against the document's extracted text at write
-time. If the file has not finished ingesting there are no chunks, the verifier
-loads empty text, no quote matches, and **every citation is stripped silently**.
-The Path is still created. The write reports success. The citations are gone, and
-you find out when someone opens the panel and the evidence is not there.
-
-**Read the document yourself first.** You are better at it than the pipeline. Model
-it now, following `atlas-modeling`, and keep for each fact the sentence you took it
-from, verbatim, plus its page.
-
-**Attach the file before any point or path work:**
+**A citation needs the document to be in the atlas.** Attach the file to the Point
+it is *about* (the process, the entity, the system), which creates the Document
+Point and wires `extracted_from` in one step:
 
 ```
 attach_file_to_point(atlas_id, point_id, file_path)
 ```
 
-This creates the Document Point, uploads, and wires `extracted_from` in one call.
-`point_id` is what the document is *about*: the process, the entity, the system.
 If no such Point exists yet, create that one Point first and attach to it.
 
-**Then poll until it is genuinely ready:**
+**Then cite with the exact sentence**, because the quote is verified server-side
+against the document's own extracted text:
 
 ```
-list_files(atlas_id)
+create_path(atlas_id, name: 'extracted_from', source: <point>, target: <document>,
+            properties: { citations: [{ quote: '<verbatim sentence>', page: 7 }] })
 ```
 
-Ready means **`status` is terminal AND `chunkCount` > 0**. Both. `status` alone
-goes terminal for a file with no extractable text, such as a scan or an image, so
-a document can be "done" and unreadable. A large PDF takes tens of seconds. Poll;
-do not sleep once and assume.
+- **The quote must appear verbatim.** Not paraphrased, not trimmed to a fragment
+  that got reflowed, not your summary of it.
+- **A citation with no quote stores nothing.** `{page: 2}` alone is not a citation,
+  and should not be counted as coverage.
+- **One end of the Path must be the Document**, because that is what the quote is
+  checked against.
+- **You cannot bluff.** An invented quote does not become evidence by being
+  well-formed.
 
-**If `chunkCount` stays 0, stop.** The document has no text layer. Say so. Do not
-write citations against it: every one will be stripped.
+**If a fact has no quotable sentence, leave it uncited and say so.** An uncited
+point is an honest gap a reviewer can act on. A stretched quote is worse than a
+gap, because it looks like evidence.
 
-A failed ingestion is currently not surfaced to the person who uploaded the file,
-so checking this yourself is not optional politeness, it is the only way anyone
-finds out.
+**Attach before you cite, and let indexing finish.** A document that has not
+finished indexing has nothing to verify against. See *Rough edges* for how that
+currently fails.
 
-## 3. Choose the unit of work
+## 2. Choose the unit of work
 
 **The unit is rarely the document.** This is the design decision that costs the
 most when you get it wrong.
@@ -156,7 +123,7 @@ model that mirrors a bad filing system looks organised and answers nothing.
 A list of 40 files where 12 were used is a fact about the engagement; silently
 reading all 40 into one flat view is how a fifty-point view happens.
 
-## 4. Propose before you write
+## 3. Propose before you write
 
 **Show a human the model before it touches the graph.** In the app this is the
 proposal screen. From an agent it is whatever you can put in front of someone: a
@@ -282,103 +249,54 @@ the whole reason the labelling rule above is not optional.
 Aim for a handful of questions, asked with the proposal, not a questionnaire sent
 ahead of it.
 
-## 5. Write, and the traps
+## 4. Write it
 
-**Citations, which are strict:**
+**Properties go inside `properties`**, never spread at the top level.
 
-```
-create_path(atlas_id, name: 'extracted_from', source: <point>, target: <document>,
-            properties: { citations: [{ quote: '<verbatim sentence>', page: 7 }] })
-```
+**A Document Point's name includes the file extension.** A view or reference that
+names the document without it matches nothing.
 
-- **`quote` is the anchor.** It must appear in the extracted text **verbatim**. Not
-  paraphrased, not trimmed to a fragment that got reflowed, not your summary. A
-  quote that does not match is dropped.
-- **The edge must have the Document at one end.** The verifier resolves the
-  document from the edge itself, so citations on an edge between two non-Document
-  Points have nothing to verify against and are dropped. Any relationship name
-  works as long as one end is the Document.
-- **A citation with no `quote` is dropped entirely.** `{page: 2}` alone stores
-  nothing. If you cannot find a verbatim sentence, the fact gets no citation, and
-  that is the honest outcome. Do not count page-only citations as coverage.
-- **You cannot bluff.** A fabricated quote on a correctly targeted edge is silently
-  dropped too.
-- **`page` is a fact about the document**, not the citation. Set it only for a
-  paginated format; never invent one for a `.txt` or `.csv`.
-- **Properties go inside `properties`**, never spread at the top level.
+**Use ids, not names.** Look the Point up once, keep the id, and reference the id
+from then on. Writing by name on an atlas of any size is how you get duplicates
+that look like typos.
 
-**Names and documents.** A Document Point's name includes the file extension. A
-view or reference that names the document without it matches nothing, silently.
+**Make each batch a complete, meaningful unit**: a process with its steps, or one
+view's worth of paths. Not "the next fifty things on my list". A batch that fails
+halfway should leave something coherent behind, which matters most from a chat
+client, where you cannot resume the way a script can.
 
-**Large writes.** Past roughly twenty Points or Paths, go over the HTTP API from a
-script rather than through individual tool calls: it is faster, it is resumable,
-and a batch that fails tells you where. Write it phased, with state, so a failure
-halfway does not mean starting again.
-
-**The HTTP payload shapes are not the MCP tool shapes.** Read the API's own
-definitions rather than assuming the tool arguments carry across; they do not, and
-the mismatch surfaces as a rejected batch rather than a helpful error. Check the
-batch for duplicate names and unverifiable quotes before sending it: past twenty
-items, finding out afterwards means reading the graph back to work out what landed.
-
-### Writing from a chat client, where you cannot run a script
-
-The advice above assumes a shell. In a chat client you have the MCP tools and
-nothing else, so "go over the HTTP API from a script" is not available to you and
-the limits below are the ones that bite instead.
-
-- **Use ids, never names.** The batch endpoint resolves a name against the atlas,
-  and that lookup is capped at 1000 points **per scenario** (#2752). Past that it
-  silently does not find the point you meant and you get a new one. Create or look
-  up the point, keep the id, and reference the id from then on. On any atlas of real
-  size, writing by name is how you get duplicates that look like typos.
-- **Keep a batch to roughly 20 to 50 items**, and make each batch one complete,
-  meaningful unit: a process with its steps, or one view's worth of paths. Not
-  "the first 50 things in my list". A batch that fails halfway should leave
-  something coherent behind, because you cannot resume from a crash the way a
-  script can.
-- **Deleting is the sharpest limit.** `bulk_delete_points` times out at 30 seconds,
-  which in practice means **10 to 20 ids per call** (#2833). A timeout tells you
-  nothing about how many were deleted, so re-read before retrying rather than
-  sending the same list again. Prefer superseding to deleting; see section 7.
-- **Write phase by phase and verify between phases**, not at the end. Points, read
-  back, then paths, read back, then views. Section 6 is not a final step here, it is
-  the thing you do between every batch. A chat client gives you no transcript of
-  what landed except the one you keep yourself.
-- **Keep your own list of what you have written**, with ids, as you go. It is the
-  only state you have. If the conversation is interrupted, that list is the
-  difference between resuming and starting over.
-- **One tool call per fact is fine for small work.** Below roughly twenty items,
-  individual `create_point` and `create_path` calls are easier to verify and no
-  slower in any way that matters. The batch endpoint is for volume, not for tidiness.
+**Keep your own list of what you have written, with ids, as you go.** In a chat
+client that list is the only state you have, and it is the difference between
+resuming and starting over.
 
 **Refused by the ontology?** Check `atlas-language` for what is sayable and which
-types may connect. If the thing you need to express genuinely has no type, that is
-a gap in the ontology, not something to model around with a near-miss type. Say so
-rather than forcing it.
+types may connect, including the decision table for when nothing fits. If the
+thing you need genuinely has no type, say so rather than forcing a near-miss: a
+near-miss type looks correct and answers queries wrongly.
 
-## 6. Verify by reading back
+## 5. Verify by reading back
 
-**Do not trust the write's success response.** Almost every failure in this skill
-reports success.
+**Read the graph back and check it says what you meant.** Not because writes fail
+often, but because a write confirms that it was accepted, not that the model is
+right, and those are different claims.
 
 ```
-list_paths(atlas_id)          → citation_count on each path that carries one
-get_path(atlas_id, path_id)   → the quotes themselves
-list_files(atlas_id)          → status and chunkCount
+list_paths(atlas_id)          citation_count on each path that carries one
+get_path(atlas_id, path_id)   the quotes themselves
+list_files(atlas_id)          what is attached and whether it extracted
 ```
 
-A path you cited that comes back with no `citation_count` was stripped, and that is
-almost always step 2: you wrote before ingestion finished.
+Three things worth checking every time: that each cited Path came back with a
+citation, that every document you attached is in the views you expected, and that
+each view you created is where you meant it rather than at the root.
 
-Check that every document you attached is actually in the views you expected, and
-that every view you created is where you meant it to be rather than at the root of
-the hierarchy.
+A cited Path that comes back with no citation almost always means the quote did
+not match the extracted text, or you wrote before indexing finished.
 
-Then run `atlas-auditing` for what is wrong, and `atlas-completeness` for what is
-missing. In that order: wrong beats thin.
+Then run `atlas-auditing` for what is wrong and `atlas-completeness` for what is
+missing, in that order: wrong beats thin.
 
-## 7. Adding to an atlas that already exists
+## 6. Adding to an atlas that already exists
 
 A fresh build and an addition are different jobs. In an addition the atlas is the
 senior document: it already carries decisions, names and citations that someone
@@ -411,11 +329,11 @@ what was believed and the evidence for it, and in an atlas somebody reviewed tha
 record is the point. A superseded point stays answerable to "what did we think in
 September, and what changed it".
 
-**Read `model_status` from both places.** It lives as a field **and** inside the
-properties blob, and a backfill moving the old ones into the field has not finished
-(#2702). One customer atlas has 166 paths retired only in the properties string. If
-you check the field alone you will treat all of them as live, re-model things that
-were deliberately retired, and report an atlas as inconsistent when it is not.
+**Check `model_status` in both places.** It can appear as a field and inside the
+properties blob, and an older atlas may carry it only in the properties string: one
+has 166 paths retired that way. Check the field alone and you will treat every one
+of them as live, re-model things that were deliberately retired, and report the
+atlas as inconsistent when it is not.
 
 **Carry citations forward.** If you supersede a point and create its replacement,
 the replacement needs its own `extracted_from` edge and quote from your new source.
@@ -434,10 +352,46 @@ work usually beats a procedure document describing the intent.
 `followed_by` plus a new one, not an edited edge, when the old order was something
 anyone relied on.
 
-**Propose the whole change before writing any of it**, as in section 4, and say
+**Propose the whole change before writing any of it**, as in section 3, and say
 plainly which points you are creating, which you are editing, and which you are
 superseding. "12 new, 4 edited, 2 superseded" is the sentence a reviewer needs; a
 list of 18 writes is not.
+
+## Rough edges, as of 2026-10-08
+
+**Everything above is how to work. This is what is awkward right now.** It is dated
+because it is meant to shrink: delete an entry when it stops being true, rather
+than carrying it forever. If something here contradicts what you observe, trust
+what you observe.
+
+**Not every file format yields text.** Atlas extracts from PDF, `.docx` and
+plain-text formats. A spreadsheet, a deck or a diagram file may upload without
+producing citable text, so the Document Point exists and has nothing in it. Convert
+before uploading where you can: a spreadsheet to CSV rather than PDF, so the
+structure stays citable; a diagram or a multi-sheet workbook to PDF. **From a chat
+client you cannot convert anything**, so say so before the upload and ask for a
+PDF, `.docx` or CSV instead.
+
+**Check extraction before citing, not after.** `list_files` reports each file's
+status and chunk count. A file is ready when the status is terminal **and** the
+chunk count is above zero: status alone goes terminal for a scan or an image with
+no text layer, so a document can be "done" and unreadable. If the chunk count stays
+at zero, stop and say the document has no text rather than citing it.
+
+**Citing before indexing finishes does not work**, and what happens depends on the
+version you are talking to: newer builds refuse the write outright, naming the
+document; older ones accepted the write and dropped the citations. Either way the
+answer is the same, wait and send it again, and section 5 is how you find out which
+happened.
+
+**Large batches have practical limits.** Resolving Points by name is capped, which
+is the main reason to write by id. Bulk deletes time out well before a long list
+finishes, so delete in small batches and read back rather than resending the same
+list after a timeout.
+
+**A `.docx` exported from a chat or meeting tool is often mostly images**, one
+avatar per utterance, which can make the file too large to ingest while containing
+every word you want. Export to PDF instead; the export deduplicates them.
 
 ## Reading a document that is already in the atlas
 
