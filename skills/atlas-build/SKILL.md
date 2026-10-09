@@ -1,6 +1,6 @@
 ---
 name: atlas-build
-description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents, or a cache of dozens of them - rather than from a conversation, AND when adding new material to an atlas that already exists. Covers the order of operations: reading the sources and keeping the sentence each fact came from, choosing the unit of work, proposing the change in chat before writing it, labelling what you inferred, asking only the questions that change the model, writing it, verifying by reading it back, and matching, editing and superseding rather than duplicating when the atlas already has points. Invoke alongside atlas-modeling, which decides HOW to model; this decides in what order.
+description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents, or a cache of dozens of them - rather than from a conversation, AND when adding new material to an atlas that already exists. Covers the order of operations: reading the sources and keeping the sentence each fact came from, choosing the unit of work, proposing the change on its own page before writing it, asking questions through the question widget rather than in the document, labelling what you inferred, asking only the questions that change the model, writing it, verifying by reading it back, and matching, editing and superseding rather than duplicating when the atlas already has points. Invoke alongside atlas-modeling, which decides HOW to model; this decides in what order.
 ---
 
 # Atlas: build from documents
@@ -12,17 +12,8 @@ label what you inferred, and how to add to an atlas that already has content.
 *Terms: Atlas calls graph nodes **Points** and edges **Paths**. A citation lives on
 the Path, not the Point.*
 
-## Two paths, and you should know which you are on
-
-**In the app.** Upload a document and Atlas proposes a model, shows it to you as a
-proposal you can read, lets you correct it, and builds on approval. If you are a
-customer with an Atlas, this is the path. It is a product feature, it is kept
-current, and nothing in this skill replaces it.
-
-**From an agent, over MCP or the HTTP API.** You compose the change yourself. You
-get more control and no safety net: none of the review surface is there unless you
-build it. Everything below is written for this path. If you are on the first path
-and something here contradicts what the app does, the app is right.
+You are working over MCP or the HTTP API and composing the change yourself. Nothing
+reviews it for you: whatever a person sees before the write, you build.
 
 ## 1. Read the sources yourself, then make them citable
 
@@ -124,10 +115,8 @@ reading all 40 into one flat view is how a fifty-point view happens.
 
 ## 3. Propose before you write
 
-**Show a human the model before it touches the graph.** In the app this is the
-proposal screen. From an agent it is whatever you can put in front of someone: a
-file-based mock of the folders and views, a rendered document, a plain list of the
-Points and Paths you are about to create.
+**Show a human the model before it touches the graph**, as the proposal page
+described below.
 
 The point is not ceremony. A model written from documents is wrong in specific,
 findable ways, and a person who knows the business finds them in minutes. After the
@@ -136,64 +125,57 @@ write those same errors take an audit to find.
 State what you could NOT determine, rather than filling it in. A gap you name is a
 question someone can answer; a gap you guess at is a fact nobody will check.
 
-### The proposal, in chat
+### The proposal, as a page
 
-**Print it in the conversation. Do not build an artifact for it.** Artifacts are
-specific to one chat client and this has to work in any of them, and a proposal
-exists to be corrected in the moment, which a separate surface the reader has to
-open works against.
+**Put it on its own page, not in the chat message.** In a client that renders
+artifacts (claude.ai, Claude Desktop), make the proposal an artifact. In one that
+does not, write it to an HTML file and give the reader the path. The chat message
+carries two lines: the counts and where to open it. A proposal printed into the
+conversation is readable at a dozen changes and unreadable at sixty, and one
+working-session transcript produces sixty.
 
-Counts first, because that is the line a reviewer actually needs, and **say what
-you reused unchanged**: that is the number that catches a duplicate, because a
-build that reuses nothing is usually a build that re-created things the atlas
-already had.
+The page, in this order:
 
-**Then say where it lands**, before the detail. A reviewer who can see the folders
-and views can tell you the model is going in the wrong place in one line, which is
-much cheaper than finding out after the write. Mark each one new or existing, and
-for an existing view say how many points you are adding to it. `atlas-language`
-has the default folder structure and the naming rules; the proposal is where you
-show which of them you chose.
+- **Counts first**, because that is the line a reviewer actually needs. **Say what
+  you reused unchanged**: that is the number that catches a duplicate, because a
+  build that reuses nothing is usually a build that re-created things the atlas
+  already had.
+- **Where it lands.** The folders and views, each marked new or existing, and for
+  an existing view how many points you are adding. A reviewer who can see this can
+  tell you the model is going in the wrong place in one line. `atlas-language` has
+  the default folders and naming rules; this is where you show which you chose.
+  **A new folder is a bigger claim than a new view**, so give it its own line:
+  folders are the atlas's top-level organisation and a customer has opinions about
+  them.
+- **One collapsible section per part of the change**, so each can be read and
+  approved on its own. Parts rarely depend on each other, and sixty changes offered
+  as one approval get approved unread.
+- **One row per point**: type, name, and new, edited or superseded. The detail
+  (description, paths in and out, the view it joins) opens under the row.
+- **Quotes behind a toggle.** Every new fact still carries its verbatim quote and
+  its page or timestamp, but the reader opens it to check, not to read.
+- **Flow drawn as flow.** When a part changes sequence or branching, show the steps
+  and their branches as a small diagram or an indented list, not as
+  `A -followed_by_if "x"-> B`. Edge syntax is what you write, not what anyone reads.
+- **Inferred items flagged on their own row**, and also gathered in one ranked
+  section (below), because a reviewer skims a cited fact and checks an inference.
+- **No questions on the page.** They go in the question widget, next.
 
-Every new fact then carries its verbatim quote and page. Inferences in their own
-block. Questions last.
+**If one part does not fit on a screen when opened, the unit of work is too big.**
+That is section 2's problem, not a reason to add more structure. A proposal nobody
+can read is the same failure as a model nobody checks.
 
-```
-PROPOSAL - Vendor Onboarding, from Supplier Setup SOP v4.pdf
-12 new · 6 reused unchanged · 4 edited · 1 superseded · 3 inferred · 2 questions
+### Questions go in the question widget, not the document
 
-STRUCTURE                                    (where it lands)
-  Process/                                   existing folder
-    Onboarding                               NEW view, 9 points
-    Supplier Setup                           existing view, +3 points
-  Systems/                                   existing folder
-    Systems                                  existing view, +1 point
+**Questions at the bottom of a long document get lost.** The reader reaches them
+tired, and an answer has nowhere to go. Once the page is up, ask them through the
+client's question tool (`AskUserQuestion` in Claude Code, the multiple-choice
+question widget in claude.ai and Claude Desktop): **one question per card**, your
+proposed answer as the first option, its basis in a sentence. Where the client has
+no such tool, ask in chat, numbered, after the link. Never inside the proposal.
 
-NEW
-  Step  Run Credit Check        "A credit check is ordered within 5 days
-                                 of the signed agreement."               p.7
-  Step  Verify Bank Details     "Bank details must be verified before
-                                 the first payment run."                 p.7
-EDITED
-  Step  Assign Buyer            + alias "Category Owner"                 p.6
-SUPERSEDED
-  Step  Manual Supplier Log     replaced by Run Credit Check             p.7
-INFERRED (no source states these)
-  Run Credit Check -> Verify Bank Details    both listed under day 5
-QUESTIONS
-  1. Does Verify Bank Details block the credit check, or run alongside it?
-```
-
-**If it is too long to read in a chat message, the unit of work is too big.** That
-is section 3's problem, not a reason to change the medium. A proposal nobody can
-read is the same failure as a model nobody checks.
-
-**A new folder is a bigger claim than a new view**, so call it out as its own line
-rather than letting it appear silently in a tree. Folders are the atlas's top-level
-organisation and a customer has opinions about them; views come and go.
-
-Keep the rendered, in-app document for the proposal screen. This is the chat
-version of the same thing, not a replacement for it.
+Fold the answers into a new revision of the page before you build, and say which
+rows they changed.
 
 ### Label what you inferred
 
@@ -224,8 +206,8 @@ disagree with. "inferred" alone records that you guessed without saying from wha
 distinction permanently, and no later audit can recover it: the graph looks the
 same either way.
 
-**Mark them in the proposal too**, as their own block rather than mixed in with the
-cited facts. The reviewer reads a different way: a cited fact they skim, an
+**Mark them in the proposal too**: a flag on the row, and their own ranked section
+rather than mixed in with the cited facts. The reviewer reads a different way: a cited fact they skim, an
 inference they check. Mixing the two costs you the checking.
 
 **When someone confirms one, write it back** as `confirmed_on` and `confirmed_by`
@@ -269,8 +251,8 @@ when they sign off the map rather than one question at a time.
 **A wrong inference is cheap. A wrong inference nobody can find is not.** That is
 the whole reason the labelling rule above is not optional.
 
-Aim for a handful of questions, asked with the proposal, not a questionnaire sent
-ahead of it.
+Aim for a handful of questions, asked through the question widget right after the
+proposal, not a questionnaire sent ahead of it.
 
 ## 4. Write it
 
