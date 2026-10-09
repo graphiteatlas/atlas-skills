@@ -1,6 +1,6 @@
 ---
 name: atlas-build
-description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents - rather than from a conversation. Covers the whole arc: what Atlas can read and what has to be converted first, the attach-then-cite ordering that fails silently, choosing the unit of work, showing a human the change before writing it, writing it, and verifying by reading back rather than trusting a success response. Invoke alongside atlas-modeling, which decides HOW to model; this decides the order of operations and where the silent failures are.
+description: Use when building an Atlas from source material - a PDF, an SOP, a transcript, a spreadsheet, a set of documents, or a cache of dozens of them - rather than from a conversation, AND when adding new material to an atlas that already exists. Covers the whole arc: what Atlas can read and what has to be converted first, the attach-then-cite ordering that fails silently, choosing the unit of work, proposing the change in chat before writing it, labelling what you inferred, asking only the questions that change the model, writing it (including from a chat client with only the MCP tools), verifying by reading back rather than trusting a success response, and matching, editing and superseding rather than duplicating when the atlas already has points. Invoke alongside atlas-modeling, which decides HOW to model; this decides the order of operations and where the silent failures are.
 ---
 
 # Atlas: build from documents
@@ -128,6 +128,34 @@ Expect to resolve, every time:
 
 None of that is mechanical. It is the work.
 
+### A cache of dozens of documents
+
+Same rule, harder to hold. Do not start at file 1 and read to file 40.
+
+**Inventory before you read.** Filename, date, type, and one line on what it
+appears to describe. Cheap, and it is what lets you group. Dates matter more than
+they look: two documents describing one process a year apart are a current state
+and a historical one, not a contradiction to reconcile.
+
+**Group by the thing described, then take one group at a time** through model,
+propose, write, verify. A group is a process. Finish it before opening the next.
+
+**One pass holds about one process.** Past that you start losing the detail of
+what you read early, and the symptom is subtle: you keep the shape and lose the
+specific sentence you needed for a citation, so coverage quietly drops. If a group
+is too big for one pass, decompose the process first and take a sub-process per
+pass.
+
+**Read the structure the rules require, not the structure the files have.** A
+folder layout, a deck's section order and a drive's naming convention are how
+somebody filed things, not how the work runs. **If the tree you are given is
+broken, report that as a finding** rather than reproducing it in the model: a
+model that mirrors a bad filing system looks organised and answers nothing.
+
+**Some files will not be worth modelling at all.** Say which you skipped and why.
+A list of 40 files where 12 were used is a fact about the engagement; silently
+reading all 40 into one flat view is how a fifty-point view happens.
+
 ## 4. Propose before you write
 
 **Show a human the model before it touches the graph.** In the app this is the
@@ -141,6 +169,41 @@ write those same errors take an audit to find.
 
 State what you could NOT determine, rather than filling it in. A gap you name is a
 question someone can answer; a gap you guess at is a fact nobody will check.
+
+### The proposal, in chat
+
+**Print it in the conversation. Do not build an artifact for it.** Artifacts are
+specific to one chat client and this has to work in any of them, and a proposal
+exists to be corrected in the moment, which a separate surface the reader has to
+open works against.
+
+Counts first, because that is the line a reviewer actually needs. Every new fact
+carries its verbatim quote and page. Inferences in their own block. Questions last.
+
+```
+PROPOSAL - Vendor Onboarding, from Referral SOP v4.pdf
+12 new · 4 edited · 2 superseded · 3 inferred · 2 questions
+
+NEW
+  Step  Order Title Search      "The supplier orders a title search within
+                                 5 days of referral."                    p.7
+  Step  Confirm Occupancy       "Occupancy must be confirmed before..."  p.7
+EDITED
+  Step  Refer to Counsel        + alias "Attorney Referral"              p.6
+SUPERSEDED
+  Step  Manual Referral Log     replaced by Order Title Search           p.7
+INFERRED (no source states these)
+  Order Title Search -> Confirm Occupancy    both listed under day 5
+QUESTIONS
+  1. Does Confirm Occupancy block the title order, or run alongside it?
+```
+
+**If it is too long to read in a chat message, the unit of work is too big.** That
+is section 3's problem, not a reason to change the medium. A proposal nobody can
+read is the same failure as a model nobody checks.
+
+Keep the rendered, in-app document for the proposal screen. This is the chat
+version of the same thing, not a replacement for it.
 
 ### Label what you inferred
 
@@ -184,6 +247,40 @@ two apart.
 nobody reads by week three. The useful test: if this turned out false tomorrow,
 would we redo nothing, one view, or the deliverable? Only the third is urgent, and
 that is the one to put in front of a person.
+
+### Ask only what matters
+
+**A long question list does not get answered.** That is the argument, not
+politeness. One engagement reached 67 open questions, most of them establishing
+only whether step A came before step B, and the three that genuinely mattered
+drowned among the sixty that did not. A short list gets answered.
+
+Before a question reaches the customer, ask whether the answer would change:
+
+- who owns or answers for a piece of work;
+- a compliance or financial risk;
+- money or time;
+- a structure a reviewer could not catch by looking at the map.
+
+**If none of those, do not ask it.** Infer it, from the sources, from file dates,
+from earlier answers or from plain logic, label it as inferred, and let the map
+carry it. A sequence nobody disputes is a sentence you can write yourself and they
+can correct in ten seconds while reading it.
+
+**And the inverse: if the answer would not change what you build, it is not a
+question.** It is curiosity, and it spends someone else's attention.
+
+**The two halves are one bargain.** Infer aggressively only because every inference
+is labelled and therefore correctable. Without the labels, "infer the rest" is
+guessing with extra steps. With them, the map is a draft the customer corrects
+rather than a claim they have to audit, and they confirm the inferences as a whole
+when they sign off the map rather than one question at a time.
+
+**A wrong inference is cheap. A wrong inference nobody can find is not.** That is
+the whole reason the labelling rule above is not optional.
+
+Aim for a handful of questions, asked with the proposal, not a questionnaire sent
+ahead of it.
 
 ## 5. Write, and the traps
 

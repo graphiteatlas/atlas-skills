@@ -114,6 +114,27 @@ A new atlas opens with six **default folders** (user-editable) that organize its
 - **Data:** a `Database` (is-a `System` — the store, not the app that writes to it) `has_table` its `Data Table`s; joinable tables link child→parent via `joins_to` with the join condition in the edge description. Columns are properties on the Data Table (`columns`, `primary_key`, `schema`), never separate points; put analyst gotchas in the description and known-good SQL in `verified_queries`.
 - **Instances vs singletons:** each flow's actions are their own per-flow `Step` nodes; entities (a System, a Position, a Vendor) are shared singletons. Never wire one action node into multiple flows.
 
+## When nothing here fits
+
+Before concluding the ontology is missing something, work down this list. It is
+almost always one of the first three.
+
+| | Ask | If yes |
+|---|---|---|
+| **1. A modeling error** | Am I trying to connect two things that should not connect directly, e.g. work straight to a `Vendor`, or a dependency on a `Process` instead of its leaf `Step`? | Fix the shape. See `atlas-modeling`. |
+| **2. A naming problem** | Does a type here cover it under a word I would not have chosen? `Artifact` covers documents, messages, files and data objects. `System` covers software, services and infrastructure. `Outcome` covers goals and objectives. | Use it, and put the customer's word in `aliases`. |
+| **3. A property, not a type** | Is this a *variation* of something that exists, rather than a different kind of thing? A quarterly review and an annual review are both `Review`. | Model the type, put the variation in a property. |
+| **4. Genuinely absent** | Does the thing have its own identity, its own relationships, and would a query need to find it as a class? | Say so plainly. Do not force it. |
+
+**For 4, report it; do not model around it.** A near-miss type is worse than a
+named gap: it looks correct, it answers queries wrongly, and nobody revisits it.
+State what you needed to express, what you tried, and why each candidate failed.
+Changing the ontology is a deliberate decision made elsewhere, and a clear report
+is what makes it possible.
+
+**Never invent a property to carry what should be a relationship.** `channel: email`
+on a point restates an edge that should exist, and then the two drift apart.
+
 ## Anti-patterns to avoid
 
 - **Loose steps:** a `Step` sequenced via `followed_by` but with no `has_step` from its owning `Process`. It's a member in spirit but invisible to membership queries and generated docs. Always wire `has_step`.
