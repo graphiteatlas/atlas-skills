@@ -12,17 +12,8 @@ label what you inferred, and how to add to an atlas that already has content.
 *Terms: Atlas calls graph nodes **Points** and edges **Paths**. A citation lives on
 the Path, not the Point.*
 
-## Two paths, and you should know which you are on
-
-**In the app.** Upload a document and Atlas proposes a model, shows it to you as a
-proposal you can read, lets you correct it, and builds on approval. If you are a
-customer with an Atlas, this is the path. It is a product feature, it is kept
-current, and nothing in this skill replaces it.
-
-**From an agent, over MCP or the HTTP API.** You compose the change yourself. You
-get more control and no safety net: none of the review surface is there unless you
-build it. Everything below is written for this path. If you are on the first path
-and something here contradicts what the app does, the app is right.
+You are working over MCP or the HTTP API and composing the change yourself. Nothing
+reviews it for you: whatever a person sees before the write, you build.
 
 ## 1. Read the sources yourself, then make them citable
 
@@ -124,10 +115,8 @@ reading all 40 into one flat view is how a fifty-point view happens.
 
 ## 3. Propose before you write
 
-**Show a human the model before it touches the graph.** In the app this is the
-proposal screen. From an agent it is whatever you can put in front of someone: a
-file-based mock of the folders and views, a rendered document, a plain list of the
-Points and Paths you are about to create.
+**Show a human the model before it touches the graph**, as the proposal page
+described below.
 
 The point is not ceremony. A model written from documents is wrong in specific,
 findable ways, and a person who knows the business finds them in minutes. After the
@@ -175,9 +164,6 @@ The page, in this order:
 **If one part does not fit on a screen when opened, the unit of work is too big.**
 That is section 2's problem, not a reason to add more structure. A proposal nobody
 can read is the same failure as a model nobody checks.
-
-In the app the proposal screen does all of this for you. This is the same document
-for an agent working outside it.
 
 ### Questions go in the question widget, not the document
 

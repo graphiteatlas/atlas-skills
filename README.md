@@ -1,6 +1,6 @@
 # atlas-skills
 
-[![version](https://img.shields.io/badge/version-0.2.1-blue)](.claude-plugin/plugin.json)
+[![version](https://img.shields.io/badge/version-0.2.2-blue)](.claude-plugin/plugin.json)
 [![license](https://img.shields.io/badge/license-Terms%20of%20Service-lightgrey)](LICENSE.md)
 
 Skills that teach an AI agent to model well in [Graphite Atlas](https://graphiteatlas.com):
