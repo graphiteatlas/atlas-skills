@@ -44,6 +44,14 @@ So before uploading anything that is not a PDF, a `.docx` or plain text:
   come up short: a ten-page diagram workbook exported by hand covered two pages.
 - **Check the text survived**, not just that the file uploaded. See step 2.
 
+**In a chat client you cannot convert anything**, so the move is to say so before
+the upload rather than after. Name the file, say Atlas will store a warning string
+instead of its contents, and ask for a PDF, a `.docx` or a CSV. Uploading it anyway
+"to see" costs a Document Point whose body is an apology and citations that match
+it. If it is already uploaded, `list_files` showing `chunkCount` 0 is the proof,
+and the honest report is that the document is not readable rather than that it is
+thin.
+
 A `.docx` that is mostly images is its own trap. Exported chat and meeting
 transcripts often carry one avatar image per utterance, which makes the file large
 enough to fail ingestion while containing every word you want. Strip the media or
@@ -133,6 +141,49 @@ write those same errors take an audit to find.
 
 State what you could NOT determine, rather than filling it in. A gap you name is a
 question someone can answer; a gap you guess at is a fact nobody will check.
+
+### Label what you inferred
+
+**Most of a model from documents is inference, and that is legitimate.** Nobody
+writes down the whole process. You read six documents, listen to one call, and fill
+the gaps with what must be true. What is not legitimate is an inference that stops
+being visible as one, because six weeks later nobody can tell what was observed
+from what was assumed.
+
+**Step order is where this bites hardest.** Sources almost never state sequence. One
+customer atlas had **0 of 663 sequence arrows** supported by a citation; on another,
+most of the open questions were nothing but "does A come before B". If you model a
+flow at all, you are inferring order, so say so.
+
+**Label it on the thing itself, when you write it:**
+
+```
+source_ref: "inferred 2026-10-08: both steps are listed under day 5 in the SOP,
+             and the second cannot start without the first's output"
+```
+
+One property, `source_ref`, beginning `inferred <date>: <basis>`. The basis is the
+part that matters: *why* you believed it, in a sentence a reviewer can agree or
+disagree with. "inferred" alone records that you guessed without saying from what.
+
+**An unlabelled inference is a defect, not a style choice.** A new Path whose
+`source_ref` neither cites a source nor says it was inferred has lost the
+distinction permanently, and no later audit can recover it: the graph looks the
+same either way.
+
+**Mark them in the proposal too**, as their own block rather than mixed in with the
+cited facts. The reviewer reads a different way: a cited fact they skim, an
+inference they check. Mixing the two costs you the checking.
+
+**When someone confirms one, write it back** as `confirmed_on` and `confirmed_by`
+rather than quietly deleting the label. An inference that was tested and held is
+worth more than one nobody ever questioned, and only the write-back can tell those
+two apart.
+
+**Rank them by what breaks if you are wrong.** A flat list of thirty is a list
+nobody reads by week three. The useful test: if this turned out false tomorrow,
+would we redo nothing, one view, or the deliverable? Only the third is urgent, and
+that is the one to put in front of a person.
 
 ## 5. Write, and the traps
 
