@@ -27,19 +27,7 @@ skills with the Atlas MCP server — tools plus the know-how to use them. See
 - **Unsure what a type is or what may connect:** `atlas-language`.
 - **After a build or edit:** `atlas-auditing`, then `atlas-completeness`. In that order: wrong beats thin.
 
-## The three principles
+## Contributing
 
-1. **Name by function.** A node is one thing, named by what it functionally is. Identity, vendor,
-   person and per-flow context live on edges and properties, never in the name.
-2. **Attach at the right level and type.** Dependencies on the atomic step. A service is a System
-   reached `provided_by` its Vendor. Documents and messages are Artifacts.
-3. **Type by meaning, membership explicit.** Use the right Point type, give every member step its own
-   `has_step`, and keep a handoff of responsibility distinct from a notification.
-
-Each principle carries its anti-patterns and worked examples inside `atlas-modeling`, which is the
-one place they are maintained.
-
-## Adding a pattern
-
-New edge cases are added as examples **under an existing principle**, not as new top-level skills.
-A new principle should be rare. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Every skill must read as a finished, generic artifact: neutral examples, no people, no internal
+references. See [`CONTRIBUTING.md`](CONTRIBUTING.md), and run `scripts/check-public.sh` before pushing.

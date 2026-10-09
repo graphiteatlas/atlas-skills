@@ -11,6 +11,8 @@ This is a public repo. Every skill and reference doc must read as a finished, ge
 5. **Live product over bundled copies.** Point readers at the `lookup_ontology` tool for the authoritative type spec; do not bundle product data files that can drift.
 6. **One invocable skill per concern; examples are reference docs.** Deep worked examples go in `references/*.md` as plain markdown (no skill frontmatter). A model won't invoke a narrow anti-pattern skill at the moment it's about to violate it, so anti-patterns live inline in the parent skill's checklist with the long-form example in references.
 
+7. **New patterns go under an existing principle.** When an edge case surfaces, first ask whether it fits one of the three modeling principles. It almost always does: add it as a one-line anti-pattern in `atlas-modeling`'s checklist, with a worked example in `references/` if it needs depth. Do not create a new top-level skill for it. Proposing a new principle should be rare.
+
 ## Skill template
 
 ```markdown
