@@ -9,21 +9,15 @@ description: Use when asked to audit, review, QA, or health-check a Graphite Atl
 
 **When this applies:** "audit / review / QA this atlas", before sign-off on a build, or when inheriting production-copied content.
 
-**The graph checks are half the audit.** Views and folders live outside the graph, and their rules
-(atlas-modeling 2a: one connected flow per view, view names of one or two words, a folder per
-process with its Overview first, the folder tree mirroring the process tree, empty or unfiled
-views, size limits) are scored by one script. With internal tooling, run it every time you run this
-skill, and before writing any proposal, not only after:
+**The graph checks are half the audit.** Views and folders live outside the graph,
+and their rules are in `atlas-modeling` 2a: one connected flow per view, view and
+folder names of one or two words, a folder per process with its Overview first, the
+folder tree mirroring the process tree, no empty or unfiled views, and size limits.
+Checks 13 to 18 below cover them.
 
-    python3 an internal script fetch <tenant> <atlasId> --out snap.json
-    python3 an internal script score snap.json [--json out.json]
-
-Exceptions (views excused from a test, with the reason) are found at `<client>/audit config/exceptions.json`,
-in the working folder or the nearest parent, up to the repository root. `--exceptions` overrides it, and an
-`--exceptions` path that does not exist exits 2. `<tenant>` is the short suffix of the MCP server name (`acme` for `graphite-atlas-acme`); passing the full
-name fails with a doubled "graphite-atlas-graphite-atlas-..." in the error. `score` also reads a PLANNED snapshot, so compose the change as a modified snapshot and score it
-before anything is written. A worse score than the live atlas is a failed check, not a note.
-Checks 13 to 18 below are the subset you can run by hand without it.
+**Score the change before you write it, not only after.** A proposed revision can
+be checked against the same rules while it is still a proposal, and a revision that
+scores worse than the atlas it replaces is a failed check, not a note.
 
 **Rules for every query:** scope to the atlas (`{atlasId: $atlasId}`), read-only (MATCH/RETURN only), and count only **live** points and paths. Path type is in `r.name`; relationships use the `:PATH` label.
 
@@ -167,18 +161,12 @@ Violation = a step marked `execution_mode: 'system'` (runs without a human) that
 
 Views live outside the graph, so this is a per-view check, not one Cypher query.
 
-**With internal tooling, run the script** (it does all of the below, for every view):
+Besides fragments, look for **hand-offs OUT and IN**: sequence paths that leave the
+view, or enter it, from a card that is not on the canvas. Those read as orphans on
+screen even when the view is one component, so they are findings too; show the
+neighbour's card as an entry or exit box, per `atlas-modeling` 2a.
 
-    python3 an internal script <tenant> <atlasId> [--view <viewId>] [--json]
-
-Exit **0** clean, **1** findings, **2** could not see the data. **Treat 2 as a failure, never a pass**:
-it means a response came back in a shape the script could not read. Besides fragments it reports
-**hand-offs OUT and IN**: sequence paths that leave the view, or enter it, from a card not on the
-canvas. Those read as orphans on screen even when the view is one component, so they are findings
-too (show the neighbour's card as entry or exit, per atlas-modeling 2a). First real run, 2026-09-30:
-it found a stage view that had silently picked up six steps from other stages.
-
-**Without it, by hand:** for each flow view (`list_views`, then `get_view_points`), take its actions
+**By hand:** for each flow view (`list_views`, then `get_view_points`), take its actions
 (Step, Decision, Approval, Review, Handoff) and the `followed_by` / `followed_by_if` paths between
 them, and count connected components (ignore direction; `mage_connected_components` on the subgraph,
 or a union-find over the pairs). Then list sequence paths whose other end is not in the view.
