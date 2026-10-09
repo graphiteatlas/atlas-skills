@@ -255,6 +255,23 @@ and give each child its own view in a folder named for the parent. Splitting the
 alone leaves a thirty-step process pretending to be atomic, and every later query
 inherits that.
 
+**This is about sequences, not point counts.** An inventory view (Artifacts, Systems,
+Org) is a list and stays readable at thirty. A sequence stops being reviewable at about
+a dozen, because the reader holds the order in their head while they pan. Applying a
+count to every view flags the wrong ones, and people learn to ignore the rule.
+
+**Never invent a seam.** If a long process genuinely has no milestone the business
+recognises, leave it whole and record why. A slightly oversized process beats a
+fictional sub-process every reader has to translate back.
+
+**A new sub-process sits between two siblings at the same altitude.** Never enter one
+from a decision partway through a sibling and exit back into it: that reads fine on a
+canvas, fails single entry and single exit, and makes the node tree say the child is part
+of the parent's middle rather than a stage of the whole. When the trigger is mid-flow,
+either move the decision to the end of the sibling, which reorders the customer's map so
+show them, or keep the content inline as steps. The test: name the sibling that ends
+where this one begins. If you cannot, it is not a sub-process yet.
+
 Where to cut, the spine view, entry and exit boxes, and the checks:
 `references/view-decomposition` and `references/large-process-decomposition`.
 
