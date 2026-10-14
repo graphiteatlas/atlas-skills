@@ -10,14 +10,7 @@
 
 **Don't (anti-pattern):** Attach only the entry step via `has_step` and chain the rest with `followed_by`. Then "what steps are in this process?" via `has_step` returns only the entry, and any `has_step → uses_resource` rollup misses most of the process.
 
-**Detection (read-only):** sequenced steps with no `has_step` parent are the gap:
-```cypher
-MATCH (s:Point {atlasId: $atlasId})
-WHERE s.type IN ['Step','Decision','Approval','Review','Handoff'] AND s.deletedAt IS NULL
-  AND EXISTS { MATCH (s)-[f:PATH]-() WHERE f.name IN ['followed_by','followed_by_if'] }
-  AND NOT EXISTS { MATCH (:Point {type:'Process'})-[:PATH {name:'has_step'}]->(s) }
-RETURN s.name
-```
+**Detection (read-only):** sequenced steps with no `has_step` parent are the gap. `run_audit` reports them as `sequenced_outside_process`; `atlas-auditing` check 5 has the same rule over the atlas export.
 
 **Litmus test:** *Can I list this process's steps with `has_step` alone?* If a sequenced step is missing, add its `has_step`.
 

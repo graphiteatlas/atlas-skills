@@ -405,7 +405,7 @@ more than a missing one.
 
 ## After the write: QA
 
-Once the build or edit is done, invoke `atlas-auditing`. It runs a fixed set of read-only Cypher checks that surface
+Once the build or edit is done, invoke `atlas-auditing`. It runs a fixed set of read-only checks (the server's `run_audit`, plus a script over the atlas export) that surface
 violations of all three principles above. The output is a scorecard with proposed fixes. The audit
 does not mutate.
 
