@@ -168,8 +168,8 @@ neighbour's card as an entry or exit box, per `atlas-modeling` 2a.
 
 **By hand:** for each flow view (`list_views`, then `get_view_points`), take its actions
 (Step, Decision, Approval, Review, Handoff) and the `followed_by` / `followed_by_if` paths between
-them, and count connected components (ignore direction; `mage_connected_components` on the subgraph,
-or a union-find over the pairs). Then list sequence paths whose other end is not in the view.
+them, and count connected components (ignore direction; a union-find over the pairs). Then list
+sequence paths whose other end is not in the view.
 
 Violation = a flow view with more than one component, or with an isolated action. Report each
 fragment with its first and last action. Fix: see atlas-modeling 2a, "One connected flow per view":
