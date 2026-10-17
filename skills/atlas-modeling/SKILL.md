@@ -120,15 +120,20 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
 - **Every `followed_by_if` carries a `displayName`**, and that is what the canvas draws on the arrow.
   Write it as "If <short condition>", or **"Always"** for an inclusive branch that always happens.
   The `condition` property still states the rule in full; `displayName` is the half a reader sees.
+  **The short condition names the outcome only, in 4 words or fewer, and never repeats the
+  Decision's subject**: "If complete", not "If Borrower Response Package is Complete". The Decision
+  already names the subject, and Pages prints the label beside the arrow.
   A Decision whose outcomes are unlabelled arrows is a diagram that asks a question and shows no
   answers, and the condition being populated does not fix it, because nothing renders it.
   `displayName` is a **native field on the Path, not a property**, so it is set and read separately
-  from `condition` and does not appear in a properties blob. This holds throughout,
-  for every conditional branch.
+  from `condition` and does not appear in a properties blob. This applies to every conditional
+  branch.
 
 ```
 ✗  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: (none)
      condition: "all items cleared"                          (true, and invisible on the canvas)
+✗  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: "If all open items are cleared"
+     (repeats the Decision's subject, and runs past 4 words)
 ✓  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: "If cleared"
      condition: "Every open item signed off by the account owner"
 ```
