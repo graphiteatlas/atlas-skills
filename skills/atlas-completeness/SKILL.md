@@ -314,6 +314,20 @@ The failure mode is none of the three: a generic type, no description, no proper
 
 ---
 
+### Performer precision
+
+**C19. Performed by a Group or a Person.** *"Can this be refactored into Positions?"*
+A `Group` or `Person` that `performs` a step is information from the source, so it is never an error. The question is whether the Group or Person stands for roles that the source can name. Never ask to create a placeholder `Position`.
+
+```sql
+select s.name as performer, s.type as performer_type, t.name as target, t.id as target_id
+from pa join pt s on s.id = pa.source_id join pt t on t.id = pa.target_id
+where pa.type = 'performs' and s.type in ('Group', 'Person')
+order by s.name, t.name
+```
+
+Fallback: `search_paths` with `"performs"`, then read each source's type. Interview question per row: "Performed by a Group: can this be refactored into Positions?" or "Performed by a Person: can this be refactored into Positions?". A performer inherited from a Process counts as the step's performer (reported "from <Process>"); this check reads the Process's own `performs` path.
+
 ## Part 2 - The judgment pass
 
 The sweep produces absences. Most absences are not gaps. Do not hand a customer 200 rows.

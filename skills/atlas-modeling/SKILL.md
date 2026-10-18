@@ -113,6 +113,7 @@ X  "Completion of Benefits"         V  "Confirm Benefits Delivered"
 X  "Steering Committee Approval"    V  "Approve Project"        (performed by Steering Committee)
 ```
 
+- **Put `performs` on a Process only when every step shares the performer.** It then means the default performer of its steps, and a step's own performer wins. When the steps differ, give each step its own performer (below). A source that names only a team makes the `Group` the performer; it never earns a placeholder `Position`, and the completeness check C19 asks later whether the Group can be refactored into Positions.
 - **Who does it is not in the name.** The performer is a `performs` path, so "Approve Project" plus
   the Steering Committee, not "Steering Committee Project Approval".
 - **A Decision names the check, as a verb or a question:** "Check UAT Result", "Check Cost Against
