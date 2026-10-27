@@ -1,0 +1,12 @@
+{
+  "name": "graphite-atlas-local",
+  "interface": { "displayName": "Graphite Atlas (local)" },
+  "plugins": [
+    {
+      "name": "graphite-atlas",
+      "source": { "source": "local", "path": "./plugins/graphite-atlas" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}
