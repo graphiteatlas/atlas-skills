@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
-    "graphite-atlas": {
+    "atlas": {
       "type": "streamable-http",
       "url": "https://www.graphiteatlas.com/api/mcp",
       "extensions": {
