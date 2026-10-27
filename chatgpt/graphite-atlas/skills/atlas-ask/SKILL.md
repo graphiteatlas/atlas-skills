@@ -46,9 +46,10 @@ jobs. Then query with `query_atlas` (read-only SQL). The tables:
 **What happened on a job, and who did it:**
 
 ```sql
-select to_char(e.occurred_at, 'YYYY-MM-DD') as day, s.name as step,
+select to_char(min(e.occurred_at), 'YYYY-MM-DD') as day, s.name as step,
        string_agg(distinct coalesce(pp.name, po.name), ', ') as who,
-       e.time_basis, e.source_system
+       string_agg(distinct e.source_system, ', ') as sources,
+       string_agg(distinct e.time_basis, ', ') as time_basis
 from objects j
 join event_objects ej on ej.object_id = j.id and ej.qualifier = 'case'
 join events e on e.id = ej.event_id
@@ -58,13 +59,15 @@ left join objects po on po.id = ep.object_id
 left join points pp on pp.id = po.type_id
 where j.name ilike '%<job name>%'
   and e.occurred_at >= '<from>' and e.occurred_at < '<to>'
-group by e.id, e.occurred_at, s.name, e.time_basis, e.source_system
-order by e.occurred_at
+group by e.occurrence_id, s.name
+order by min(e.occurred_at)
 ```
 
-One row per event. An event can name both a person and their role as performers
-(`Tyson Woodham, Project Manager`); `string_agg` keeps them on one row. Joining performers
-without grouping returns the event once per performer.
+One row per happening. A happening seen in several sources (a Monday post, a calendar
+entry, a document) is one event per source, joined by a shared `occurrence_id`: group by it,
+and `sources` lists where it was recorded. An event can also name both a person and their
+role (`Tyson Woodham, Project Manager`). Without the grouping, one happening comes back once
+per source and per performer. Count happenings with `count(distinct e.occurrence_id)`.
 
 Find the job first if you are unsure of its name:
 `select distinct j.number, j.name from objects j join event_objects eo on eo.object_id = j.id and eo.qualifier = 'case'`.
