@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "graphite-atlas",
+  "version": "0.1.0",
+  "description": "Ask your Graphite Atlas how the business works and what happened on each job: processes, steps, roles, people and systems, and the activity history with its evidence.",
+  "author": { "name": "Graphite Atlas", "url": "https://graphiteatlas.com" },
+  "homepage": "https://graphiteatlas.com",
+  "keywords": ["atlas", "process", "operations", "activity"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Graphite Atlas",
+        "shortDescription": "How your business works, and what happened on each job",
+        "longDescription": "Answers questions from your Graphite Atlas: the map of your processes, steps, roles, people and systems, and the activity history of each job, with the evidence behind every event.",
+        "developerName": "Graphite Atlas",
+        "category": "Productivity",
+        "capabilities": ["Read"],
+        "websiteURL": "https://graphiteatlas.com",
+        "defaultPrompt": [
+          "What happened on our most recent job last month, and who did it?",
+          "Walk me through how a job goes from estimate to final bill."
+        ],
+        "brandColor": "#1A4FC8"
+      }
+    }
+  }
+}
