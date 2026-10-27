@@ -46,8 +46,9 @@ jobs. Then query with `query_atlas` (read-only SQL). The tables:
 **What happened on a job, and who did it:**
 
 ```sql
-select e.occurred_at::date as day, s.name as step,
-       coalesce(pp.name, po.name) as who, e.time_basis, e.source_system
+select to_char(e.occurred_at, 'YYYY-MM-DD') as day, s.name as step,
+       string_agg(distinct coalesce(pp.name, po.name), ', ') as who,
+       e.time_basis, e.source_system
 from objects j
 join event_objects ej on ej.object_id = j.id and ej.qualifier = 'case'
 join events e on e.id = ej.event_id
@@ -57,8 +58,13 @@ left join objects po on po.id = ep.object_id
 left join points pp on pp.id = po.type_id
 where j.name ilike '%<job name>%'
   and e.occurred_at >= '<from>' and e.occurred_at < '<to>'
+group by e.id, e.occurred_at, s.name, e.time_basis, e.source_system
 order by e.occurred_at
 ```
+
+One row per event. An event can name both a person and their role as performers
+(`Tyson Woodham, Project Manager`); `string_agg` keeps them on one row. Joining performers
+without grouping returns the event once per performer.
 
 Find the job first if you are unsure of its name:
 `select distinct j.number, j.name from objects j join event_objects eo on eo.object_id = j.id and eo.qualifier = 'case'`.
