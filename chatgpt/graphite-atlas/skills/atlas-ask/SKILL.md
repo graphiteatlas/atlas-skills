@@ -60,7 +60,7 @@ left join points pp on pp.id = po.type_id
 where j.name ilike '%<job name>%'
   and e.occurred_at >= '<from>' and e.occurred_at < '<to>'
 group by e.occurrence_id, s.name
-order by min(e.occurred_at)
+order by min(e.occurred_at), s.name
 ```
 
 One row per happening. A happening seen in several sources (a Monday post, a calendar
