@@ -13,6 +13,8 @@ This is a public repo. Every skill and reference doc must read as a finished, ge
 
 7. **New patterns go under an existing principle.** When an edge case surfaces, first ask whether it fits one of the three modeling principles. It almost always does: add it as a one-line anti-pattern in `atlas-modeling`'s checklist, with a worked example in `references/` if it needs depth. Do not create a new top-level skill for it. Proposing a new principle should be rare.
 
+8. **Bump the version when a skill changes.** Raise `version` in both `.claude-plugin/plugin.json` and `plugin.json`. The ChatGPT download on the docs site (docs.graphiteatlas.com/connect-ai/chatgpt-web) is built from this repository every night and shows that version, so people can tell when to upload the new file.
+
 ## Skill template
 
 ```markdown
