@@ -1,20 +1,31 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "graphite-atlas",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Atlas modeling skills plus the Atlas MCP server, bundled. Tools to read and write a Graphite Atlas, and the know-how to model it well.",
-  "author": { "name": "Graphite Atlas" },
+  "author": {
+    "name": "Graphite Atlas"
+  },
   "homepage": "https://graphiteatlas.com",
-  "keywords": ["atlas", "knowledge-graph", "enterprise-design", "ontology", "mcp"],
+  "keywords": [
+    "atlas",
+    "knowledge-graph",
+    "enterprise-design",
+    "ontology",
+    "mcp"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "Graphite Atlas",
-        "shortDescription": "Model how your business works, with the Atlas tools and skills",
+        "shortDescription": "Model how your business works",
         "longDescription": "Connects to your Graphite Atlas and teaches the assistant how to model well: the Atlas language, the three modeling principles, and read-only audit checks.",
         "developerName": "Graphite Atlas",
         "category": "Productivity",
-        "capabilities": ["Read", "Write"],
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
         "websiteURL": "https://graphiteatlas.com",
         "defaultPrompt": [
           "List my atlases.",

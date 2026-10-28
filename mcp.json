@@ -3,7 +3,16 @@
   "mcpServers": {
     "graphite-atlas": {
       "type": "streamable-http",
-      "url": "https://graphiteatlas.com/api/mcp"
+      "url": "https://graphiteatlas.com/api/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "client": { "mode": "dcr" },
+            "baseScopes": ["mcp"]
+          }
+        }
+      }
     }
   }
 }

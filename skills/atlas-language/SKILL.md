@@ -1,6 +1,6 @@
 ---
 name: atlas-language
-description: The Atlas language - Graphite Atlas's typed vocabulary of Point types, Path types (with source→target constraints + multiplicity), Properties, and the default folder structure. Use whenever you need to know what types exist or what can legally connect to what: before creating/validating Points or Paths, when picking a relationship type, when modeling a process/org/metric tree, when structuring a new atlas (which default folder a view/point belongs in), or when a non-Atlas Claude session needs the Atlas vocabulary. Pairs with `atlas-modeling` (the modeling principles).
+description: "The Atlas language - Graphite Atlas's typed vocabulary of Point types, Path types (with source→target constraints + multiplicity), Properties, and the default folder structure. Use whenever you need to know what types exist or what can legally connect to what: before creating/validating Points or Paths, when picking a relationship type, when modeling a process/org/metric tree, when structuring a new atlas (which default folder a view/point belongs in), or when a non-Atlas Claude session needs the Atlas vocabulary. Pairs with `atlas-modeling` (the modeling principles)."
 ---
 
 # The Atlas Language (reference)
