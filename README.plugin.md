@@ -30,6 +30,10 @@ catches what prevention misses.
 
 So one install delivers: **MCP tools + modeling know-how + two commands.**
 
+## ChatGPT and Codex
+
+The same repository installs in ChatGPT and Codex. `plugin.json` and `mcp.json` at the root are the portable manifest and MCP config; `.agents/plugins/marketplace.json` lists the plugin for their marketplace import. A ChatGPT workspace admin imports `https://github.com/graphiteatlas/atlas-skills` under Admin console, Plugins, Add, Import marketplace. Setup guide: https://docs.graphiteatlas.com/connect-ai/chatgpt
+
 ## Install (local first draft)
 
 ```
