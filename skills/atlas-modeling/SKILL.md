@@ -398,6 +398,8 @@ definitions rather than assuming the tool arguments carry across: **the HTTP pay
 from the MCP tool shapes**. Check the batch for duplicate names and unverifiable quotes before
 sending. How the approved change is written never changes whether it was approved.
 
+Branch a scenario when someone should review a change before it touches Current State, and pass `scenario_id` on every call; see `atlas-build`, section 7.
+
 ## Building from documents
 
 When the source of the model is a document (a PDF, a spreadsheet, an SOP) rather than a
