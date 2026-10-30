@@ -382,6 +382,25 @@ plainly which points you are creating, which you are editing, and which you are
 superseding. "12 new, 6 reused, 4 edited, 1 superseded" is the sentence a reviewer needs; a
 list of 18 writes is not.
 
+## 7. Scenarios: branch a change someone should review
+
+Branch a scenario when a change should be reviewed before it touches Current State. A change
+already approved, or a trivial fix, goes straight to Current State.
+
+- **Find it first.** `list_scenarios(atlas_id)` returns each scenario's id, name, status, parent and
+  whether it is Current State. Name a scenario by id; if two share a name the tools refuse and
+  ask you to choose.
+- **Pass `scenario_id` on every call**, reads and writes. A call without it is saved to the session's
+  scenario (`use_scenario`) or in the atlas original, which is the one place a reviewed change
+  must not go.
+- **A scenario follows Current State until it changes an item.** Points and paths you did not
+  touch update when Current State does; the ones you edited stay as you left them.
+- **Compare by summary, then by item.** `compare_scenarios(atlas_id, scenario, against)` returns
+  counts first. Ask for items a page at a time (`limit`, `cursor`) when the reviewer wants them.
+  Never load two full graphs to diff them.
+- **Remove from view is not Removed.** Taking a point out of a view hides it there and the point
+  stays in the atlas. Only a delete removes it. Report the two separately in a comparison.
+
 ## Reading a document that is already in the atlas
 
 **Atlas's own retrieval tools are Navigator-only.** `search_document`,
