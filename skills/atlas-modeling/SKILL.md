@@ -119,11 +119,16 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
 - **A Decision names the check, as a verb or a question:** "Check UAT Result", "Check Cost Against
   Initial Estimate", not "UAT Pass". The outcomes live on the `followed_by_if` branches.
 - **Every `followed_by_if` carries a `displayName`**, and that is what the canvas draws on the arrow.
-  Write it as "If <short condition>", or **"Always"** for an inclusive branch that always happens.
   The `condition` property still states the rule in full; `displayName` is the half a reader sees.
-  **The short condition names the outcome only, in 4 words or fewer, and never repeats the
-  Decision's subject**: "If complete", not "If Borrower Response Package is Complete". The Decision
-  already names the subject, and Pages prints the label beside the arrow.
+  Label it the way a process engineer labels a Visio map (Nigel, 2026-11-13, after Celink's Kyle
+  Brown's maps):
+  - **A Decision that is a yes/no question gets "Yes" and "No"**, and nothing else. "Does the
+    request qualify for self-service?" branches "Yes" and "No", not "self-service" and "not
+    self-service". Name such a Decision as the question so the answer reads.
+  - **A Decision with several outcomes gets the outcome**: "fax", "mail", "portal"; "Nevada",
+    "Oregon". 4 words or fewer, never repeating the Decision's subject.
+  - **No "If" prefix.** "Approved", not "If approved".
+  - **"Always"** for an inclusive branch that always happens.
   A Decision whose outcomes are unlabelled arrows is a diagram that asks a question and shows no
   answers, and the condition being populated does not fix it, because nothing renders it.
   `displayName` is a **native field on the Path, not a property**, so it is set and read separately
@@ -133,10 +138,14 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
 ```
 ✗  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: (none)
      condition: "all items cleared"                          (true, and invisible on the canvas)
-✗  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: "If all open items are cleared"
-     (repeats the Decision's subject, and runs past 4 words)
-✓  Check Open Items ─followed_by_if→ Collect Closing Docs    displayName: "If cleared"
+✗  Are Open Items Cleared? ─followed_by_if→ Collect Closing Docs    displayName: "If all open items are cleared"
+     (an "If", repeats the Decision's subject, and runs past 4 words)
+✗  Are Open Items Cleared? ─followed_by_if→ Collect Closing Docs    displayName: "cleared"
+     (the Decision asks a yes/no question: answer it)
+✓  Are Open Items Cleared? ─followed_by_if→ Collect Closing Docs    displayName: "Yes"
      condition: "Every open item signed off by the account owner"
+✓  Determine Request Channel ─followed_by_if→ Scan Mailed Request   displayName: "mail"
+     (several outcomes: name the outcome)
 ```
 
 - **Keep the source's label as an alias** when it is what people say ("QC Pass", "Business Impact
