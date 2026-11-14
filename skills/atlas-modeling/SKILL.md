@@ -120,8 +120,7 @@ X  "Steering Committee Approval"    V  "Approve Project"        (performed by St
   Initial Estimate", not "UAT Pass". The outcomes live on the `followed_by_if` branches.
 - **Every `followed_by_if` carries a `displayName`**, and that is what the canvas draws on the arrow.
   The `condition` property still states the rule in full; `displayName` is the half a reader sees.
-  Label it the way a process engineer labels a Visio map (Nigel, 2026-11-13, after Celink's Kyle
-  Brown's maps):
+  Label it the way a process engineer labels a Visio map (2026-11-13):
   - **A Decision that is a yes/no question gets "Yes" and "No"**, and nothing else. "Does the
     request qualify for self-service?" branches "Yes" and "No", not "self-service" and "not
     self-service". Name such a Decision as the question so the answer reads.
